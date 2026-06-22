@@ -209,7 +209,7 @@ function exportPDF(){
   <div class="callout">Golden rule: if all text were removed from the image, the customer should still understand the point.</div>
   <table><thead><tr><th style="width:140px">Image slot</th><th>Communication goal</th></tr></thead><tbody>${slotRows}</tbody></table>
 </div>
-<script>window.onload=function(){window.print();}<\/script>
+<script>window.onload=function(){setTimeout(function(){window.print();},800);}<\/script>
 </body></html>`;
 
   const w=window.open('','_blank');
