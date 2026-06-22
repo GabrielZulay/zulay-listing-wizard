@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zulay Kitchen — Listing Image Request Wizard</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--navy:#1A3C5E;--orange:#E8732A;--light:#F7F8FA;--border:#DDE2E8;--text:#1A1A1A;--muted:#666}
@@ -30,14 +30,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .field{margin-bottom:1.5rem}
 .field label{display:block;font-size:14px;font-weight:600;color:var(--navy);margin-bottom:.4rem}
 .field .sub{font-size:13px;color:#888;margin-bottom:.6rem;line-height:1.5}
-.field input[type=text],.field input[type=date],.field select,.field textarea{
-  width:100%;font-family:inherit;font-size:15px;color:var(--text);
-  background:#fff;border:1.5px solid var(--border);border-radius:10px;
-  padding:.75rem 1rem;transition:border-color .2s,box-shadow .2s;line-height:1.5
-}
-.field input:focus,.field select:focus,.field textarea:focus{
-  outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,60,94,.08)
-}
+.field input[type=text],.field input[type=date],.field select,.field textarea{width:100%;font-family:inherit;font-size:15px;color:var(--text);background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:.75rem 1rem;transition:border-color .2s,box-shadow .2s;line-height:1.5}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,60,94,.08)}
 .field textarea{resize:vertical}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .poe-block{margin-bottom:1.75rem}
@@ -69,9 +63,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-back{background:#fff;color:#555;border:1.5px solid var(--border)}
 .btn-back:hover{background:var(--light);border-color:#bbb}
 .btn-next{background:var(--navy);color:#fff}
-.btn-next:hover{background:#143152;transform:translateY(-1px)}
+.btn-next:hover{background:#143152}
 .btn-export{background:var(--orange);color:#fff}
-.btn-export:hover{background:#d4661f;transform:translateY(-1px)}
+.btn-export:hover{background:#d4661f}
+.btn-export:disabled{background:#ccc;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -88,6 +83,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="nav" id="nav"></div>
 </div>
 
+<!-- Hidden PDF render target -->
+<div id="pdfTarget" style="position:absolute;left:-9999px;top:0;width:750px;font-family:Arial,sans-serif;font-size:12px;color:#222;background:#fff"></div>
+
 <script>
 const STEPS=['Product','POE Research','Competitors','Differentiators','Image Plan'];
 let cur=0;
@@ -102,6 +100,7 @@ const d={
   diff:{specLink:'',materials:'',features:'',certs:''},
   plan:{main:'',images:Array(7).fill(''),aplus:Array(5).fill('')}
 };
+
 const THEME_LIST=['Dimensions & feature callout','Heat resistant / material safety','Use cases / versatility','Easy to clean / dishwasher safe','Lifestyle / in-use shot','Before & after comparison','How to use','Brand story / quality'];
 const IMG_HINTS=['Dimensions & key design features','Your #1 unique selling point','Performance proof — show it working','Feature deep-dive vs competitors','Heat resistance / material safety','Easy to clean / dishwasher safe','All use cases / versatility'];
 const APLUS_HINTS=['Brand hero & tagline','Key features deep-dive','Lifestyle / in-use','Comparison chart','Social proof & trust'];
@@ -155,19 +154,101 @@ function step4(c){
   c.innerHTML=`<div class="step-eyebrow">Step 5 of 5</div><div class="step-title">Image communication plan</div><div class="step-sub">Based on your research, write one communication goal per image slot. Focus on what the customer should <em>understand or feel</em> — not what the image should look like. The designer handles that.</div><div class="callout"><div class="callout-title">The golden rule</div><div class="callout-body">If all text were removed from the image, would a customer still understand the point? If not — rethink the goal.</div></div>${mainSlot}<div class="section-label">Secondary images</div>${imgSlots}<div class="section-label">A+ content</div>${apSlots}`;
 }
 
-function exportBrief(){
+function buildPDFContent(){
   const b=d.basics;
   const posRows=d.poe.pos.filter(r=>r.topic).map(r=>`<tr><td>${r.topic}</td><td>${r.pct}</td><td>${r.quotes}</td></tr>`).join('');
   const negRows=d.poe.neg.filter(r=>r.topic).map(r=>`<tr><td>${r.topic}</td><td>${r.pct}</td><td>${r.quotes}</td></tr>`).join('');
   const retRows=d.poe.ret.filter(r=>r.topic).map(r=>`<tr><td>${r.topic}</td><td>${r.pct}</td><td>${r.quotes}</td></tr>`).join('');
-  const slotRows=[{label:'Main image',val:d.plan.main,hint:'Pure white bg, no text'},...d.plan.images.map((v,i)=>({label:`Image ${i+1}`,val:v,hint:IMG_HINTS[i]})),...d.plan.aplus.map((v,i)=>({label:`A+ Module ${i+1}`,val:v,hint:APLUS_HINTS[i]}))].map(s=>`<tr><td><strong>${s.label}</strong><br><span style="font-size:10px;color:#888">${s.hint}</span></td><td>${s.val||'—'}</td></tr>`).join('');
-  const themeList=(d.comp.themes||[]).map(t=>`<span style="display:inline-block;background:#f0f0f0;border:1px solid #ddd;border-radius:4px;padding:2px 8px;margin:2px;font-size:11px">${t}</span>`).join(' ')||'—';
-  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Listing Brief — ${b.name||b.asin}</title><style>body{font-family:Arial,sans-serif;font-size:12px;color:#222;margin:0;padding:0}.page{max-width:700px;margin:0 auto;padding:2.5rem 2rem}.header{border-bottom:3px solid #1A3C5E;padding-bottom:1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end}.brand{font-size:10px;color:#E8732A;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem}h1{font-size:22px;color:#1A3C5E;margin:0}.meta{font-size:11px;color:#666;margin-top:.25rem}h2{font-size:12px;font-weight:bold;color:#1A3C5E;margin:1.5rem 0 .6rem;padding-bottom:.3rem;border-bottom:2px solid #E8732A;text-transform:uppercase;letter-spacing:.05em}table{width:100%;border-collapse:collapse;margin-bottom:1rem;font-size:12px}th{background:#1A3C5E;color:#fff;padding:.35rem .6rem;text-align:left;font-size:11px}td{padding:.35rem .6rem;border:0.5px solid #ddd;vertical-align:top}tr:nth-child(even) td{background:#f9f9f9}.kv{font-size:12px;margin-bottom:.75rem}.kv dt{color:#888;font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin-top:.5rem}.kv dd{color:#222;margin:.15rem 0 0}.callout{background:#FDF3EC;border-left:3px solid #E8732A;padding:.6rem .9rem;margin-bottom:.75rem;font-size:12px;color:#555;border-radius:0 6px 6px 0}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="page"><div class="header"><div><div class="brand">Zulay Kitchen — Listing Image Brief</div><h1>${b.name||'Product'}</h1><div class="meta">${b.asin||''} &nbsp;·&nbsp; ${b.type||''} &nbsp;·&nbsp; Keyword: ${b.keyword||''}</div></div><div style="text-align:right;font-size:11px;color:#888">${b.requestor||''}<br>${b.date||''}</div></div>${b.type==='Refresh'&&b.refreshNote?`<div class="callout"><strong>Refresh note:</strong> ${b.refreshNote}</div>`:''}<h2>POE research</h2><table><thead><tr><th>Positive topic</th><th style="width:80px">% Mentions</th><th>Sample quotes</th></tr></thead><tbody>${posRows||'<tr><td colspan=3>—</td></tr>'}</tbody></table><table><thead><tr><th>Negative topic</th><th style="width:80px">% Mentions</th><th>Sample quotes</th></tr></thead><tbody>${negRows||'<tr><td colspan=3>—</td></tr>'}</tbody></table><table><thead><tr><th>Return reason</th><th style="width:80px">% Mentions</th><th>Sample quotes</th></tr></thead><tbody>${retRows||'<tr><td colspan=3>—</td></tr>'}</tbody></table><h2>Competitor research</h2><dl class="kv"><dt>Images doc</dt><dd>${d.comp.link||'—'}</dd><dt>Themes seen</dt><dd style="margin-top:.3rem">${themeList}</dd></dl><p style="font-size:12px"><strong>Gaps:</strong> ${d.comp.gaps||'—'}</p><h2>Product differentiators</h2><dl class="kv"><dt>Spec sheet</dt><dd>${d.diff.specLink||'—'}</dd><dt>Materials & specs</dt><dd>${(d.diff.materials||'—').replace(/\n/g,'<br>')}</dd><dt>Unique features</dt><dd>${(d.diff.features||'—').replace(/\n/g,'<br>')}</dd><dt>Certifications</dt><dd>${d.diff.certs||'—'}</dd></dl><h2>Image communication plan</h2><div class="callout">Golden rule: if all text were removed from the image, the customer should still understand the point.</div><table><thead><tr><th style="width:150px">Image slot</th><th>Communication goal</th></tr></thead><tbody>${slotRows}</tbody></table></div></body></html>`;
-  const blob=new Blob([html],{type:'text/html'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download=`Listing_Brief_${(b.asin||'product').replace(/\s/g,'_')}.html`;
-  a.click();URL.revokeObjectURL(url);
+  const slotRows=[
+    {label:'Main image',val:d.plan.main,hint:'Pure white bg, no text'},
+    ...d.plan.images.map((v,i)=>({label:`Image ${i+1}`,val:v,hint:IMG_HINTS[i]})),
+    ...d.plan.aplus.map((v,i)=>({label:`A+ Module ${i+1}`,val:v,hint:APLUS_HINTS[i]}))
+  ].map(s=>`<tr><td style="width:150px"><strong>${s.label}</strong><br><span style="font-size:10px;color:#888">${s.hint}</span></td><td>${s.val||'—'}</td></tr>`).join('');
+  const themeList=(d.comp.themes||[]).map(t=>`<span style="display:inline-block;background:#f0f0f0;border:1px solid #ddd;border-radius:3px;padding:1px 7px;margin:2px;font-size:10px">${t}</span>`).join(' ')||'—';
+
+  return `
+  <div style="padding:2rem 2.5rem;font-family:Arial,sans-serif;font-size:12px;color:#222">
+    <div style="border-bottom:3px solid #1A3C5E;padding-bottom:1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end">
+      <div>
+        <div style="font-size:10px;color:#E8732A;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem">Zulay Kitchen — Listing Image Brief</div>
+        <div style="font-size:22px;font-weight:bold;color:#1A3C5E">${b.name||'Product'}</div>
+        <div style="font-size:11px;color:#666;margin-top:.2rem">${b.asin||''} &nbsp;·&nbsp; ${b.type||''} &nbsp;·&nbsp; Keyword: ${b.keyword||''}</div>
+      </div>
+      <div style="text-align:right;font-size:11px;color:#888">${b.requestor||''}<br>${b.date||''}</div>
+    </div>
+    ${b.type==='Refresh'&&b.refreshNote?`<div style="background:#FDF3EC;border-left:3px solid #E8732A;padding:.6rem .9rem;margin-bottom:1rem;font-size:12px;border-radius:0 6px 6px 0"><strong>Refresh note:</strong> ${b.refreshNote}</div>`:''}
+
+    <div style="font-size:12px;font-weight:bold;color:#1A3C5E;margin:1.25rem 0 .5rem;padding-bottom:.3rem;border-bottom:2px solid #E8732A;text-transform:uppercase;letter-spacing:.05em">POE Research</div>
+    <div style="font-size:10px;color:#999;margin-bottom:.6rem">Pulled from Amazon Seller Central — Product Opportunity Explorer</div>
+
+    <div style="font-size:11px;font-weight:bold;color:#2A5A0E;margin-bottom:.3rem">Positive topics</div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:.75rem;font-size:11px">
+      <thead><tr style="background:#1A3C5E"><th style="color:#fff;padding:.3rem .5rem;text-align:left">Topic</th><th style="color:#fff;padding:.3rem .5rem;text-align:left;width:70px">% Mentions</th><th style="color:#fff;padding:.3rem .5rem;text-align:left">Sample quotes</th></tr></thead>
+      <tbody>${posRows||'<tr><td colspan="3" style="padding:.3rem .5rem;border:0.5px solid #ddd">—</td></tr>'}</tbody>
+    </table>
+
+    <div style="font-size:11px;font-weight:bold;color:#7A1C1C;margin-bottom:.3rem">Negative topics</div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:.75rem;font-size:11px">
+      <thead><tr style="background:#1A3C5E"><th style="color:#fff;padding:.3rem .5rem;text-align:left">Topic</th><th style="color:#fff;padding:.3rem .5rem;text-align:left;width:70px">% Mentions</th><th style="color:#fff;padding:.3rem .5rem;text-align:left">Sample quotes</th></tr></thead>
+      <tbody>${negRows||'<tr><td colspan="3" style="padding:.3rem .5rem;border:0.5px solid #ddd">—</td></tr>'}</tbody>
+    </table>
+
+    <div style="font-size:11px;font-weight:bold;color:#7A4200;margin-bottom:.3rem">Return reasons</div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:.75rem;font-size:11px">
+      <thead><tr style="background:#1A3C5E"><th style="color:#fff;padding:.3rem .5rem;text-align:left">Topic</th><th style="color:#fff;padding:.3rem .5rem;text-align:left;width:70px">% Mentions</th><th style="color:#fff;padding:.3rem .5rem;text-align:left">Sample quotes</th></tr></thead>
+      <tbody>${retRows||'<tr><td colspan="3" style="padding:.3rem .5rem;border:0.5px solid #ddd">—</td></tr>'}</tbody>
+    </table>
+
+    <div style="font-size:12px;font-weight:bold;color:#1A3C5E;margin:1.25rem 0 .5rem;padding-bottom:.3rem;border-bottom:2px solid #E8732A;text-transform:uppercase;letter-spacing:.05em">Competitor Research</div>
+    <p style="margin-bottom:.4rem"><strong>Images doc:</strong> ${d.comp.link||'—'}</p>
+    <p style="margin-bottom:.4rem"><strong>Themes seen:</strong><br>${themeList}</p>
+    <p style="margin-bottom:.4rem"><strong>Gaps — what competitors aren't showing:</strong><br>${(d.comp.gaps||'—').replace(/\n/g,'<br>')}</p>
+
+    <div style="font-size:12px;font-weight:bold;color:#1A3C5E;margin:1.25rem 0 .5rem;padding-bottom:.3rem;border-bottom:2px solid #E8732A;text-transform:uppercase;letter-spacing:.05em">Product Differentiators</div>
+    <p style="margin-bottom:.4rem"><strong>Spec sheet:</strong> ${d.diff.specLink||'—'}</p>
+    <p style="margin-bottom:.4rem"><strong>Materials & specs:</strong><br>${(d.diff.materials||'—').replace(/\n/g,'<br>')}</p>
+    <p style="margin-bottom:.4rem"><strong>Unique features:</strong><br>${(d.diff.features||'—').replace(/\n/g,'<br>')}</p>
+    <p style="margin-bottom:.4rem"><strong>Certifications:</strong> ${d.diff.certs||'—'}</p>
+
+    <div style="font-size:12px;font-weight:bold;color:#1A3C5E;margin:1.25rem 0 .5rem;padding-bottom:.3rem;border-bottom:2px solid #E8732A;text-transform:uppercase;letter-spacing:.05em">Image Communication Plan</div>
+    <div style="background:#FDF3EC;border-left:3px solid #E8732A;padding:.5rem .75rem;margin-bottom:.75rem;font-size:11px;color:#555;border-radius:0 5px 5px 0">
+      <strong>Golden rule:</strong> If all text were removed from the image, the customer should still understand the point.
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead><tr style="background:#1A3C5E"><th style="color:#fff;padding:.3rem .5rem;text-align:left;width:150px">Image slot</th><th style="color:#fff;padding:.3rem .5rem;text-align:left">Communication goal</th></tr></thead>
+      <tbody>${slotRows}</tbody>
+    </table>
+  </div>`;
+}
+
+async function exportPDF(){
+  save();
+  const btn=document.querySelector('.btn-export');
+  btn.disabled=true;
+  btn.textContent='Generating PDF…';
+
+  const target=document.getElementById('pdfTarget');
+  target.innerHTML=buildPDFContent();
+
+  const name=`Listing_Brief_${(d.basics.asin||d.basics.name||'product').replace(/\s/g,'_')}.pdf`;
+
+  try {
+    await html2pdf().set({
+      margin:[10,10,10,10],
+      filename:name,
+      image:{type:'jpeg',quality:0.98},
+      html2canvas:{scale:2,useCORS:true,logging:false},
+      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+      pagebreak:{mode:['avoid-all','css','legacy']}
+    }).from(target).save();
+  } catch(e){
+    alert('PDF generation failed. Please try again.');
+    console.error(e);
+  }
+
+  target.innerHTML='';
+  btn.disabled=false;
+  btn.textContent='Export PDF';
 }
 
 function render(){
@@ -177,11 +258,11 @@ function render(){
   [step0,step1,step2,step3,step4][cur](w);
   const nav=document.getElementById('nav');
   nav.innerHTML='';
-  if(cur>0){const b=document.createElement('button');b.className='btn btn-back';b.innerHTML='← Back';b.onclick=()=>{save();cur--;render();window.scrollTo(0,0);};nav.appendChild(b);}
+  if(cur>0){const b=document.createElement('button');b.className='btn btn-back';b.textContent='← Back';b.onclick=()=>{save();cur--;render();window.scrollTo(0,0);};nav.appendChild(b);}
   else nav.appendChild(document.createElement('div'));
   const f=document.createElement('button');
   if(cur<STEPS.length-1){f.className='btn btn-next';f.textContent='Continue →';f.onclick=()=>{save();cur++;render();window.scrollTo(0,0);};}
-  else{f.className='btn btn-export';f.innerHTML='Export brief';f.onclick=()=>{save();exportBrief();};}
+  else{f.className='btn btn-export';f.textContent='Export PDF';f.onclick=exportPDF;}
   nav.appendChild(f);
 }
 render();
