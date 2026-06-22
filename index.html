@@ -4,11 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zulay Kitchen — Listing Image Request Wizard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--navy:#1A3C5E;--orange:#E8732A;--light:#F7F8FA;--border:#DDE2E8;--text:#1A1A1A;--muted:#666}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0F2F5;min-height:100vh;color:var(--text)}
-.wiz{max-width:660px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+.wiz{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
 .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem}
 .brand{display:flex;align-items:center;gap:.6rem}
 .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--orange)}
@@ -39,9 +41,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge.pos{background:#EAF3DE;color:#2A5A0E}
 .badge.neg{background:#FCEBEB;color:#7A1C1C}
 .badge.ret{background:#FEF3E2;color:#7A4200}
-.poe-header{display:grid;grid-template-columns:1.1fr 70px 1.5fr;gap:8px;margin-bottom:5px;padding:0 2px}
+.poe-header{display:grid;grid-template-columns:1.2fr 80px 2fr;gap:8px;margin-bottom:5px;padding:0 2px}
 .poe-header span{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em}
-.poe-row{display:grid;grid-template-columns:1.1fr 70px 1.5fr;gap:8px;margin-bottom:7px}
+.poe-row{display:grid;grid-template-columns:1.2fr 80px 2fr;gap:8px;margin-bottom:7px}
 .poe-row input{font-family:inherit;font-size:13px;color:var(--text);background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:.55rem .75rem;width:100%;transition:border-color .2s}
 .poe-row input:focus{outline:none;border-color:var(--navy)}
 .themes{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.6rem}
@@ -65,6 +67,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-next:hover{background:#143152}
 .btn-export{background:var(--orange);color:#fff}
 .btn-export:hover{background:#d4661f}
+.btn-export:disabled{background:#ccc;cursor:not-allowed;transform:none}
 </style>
 </head>
 <body>
@@ -144,77 +147,207 @@ function step4(c){
   c.innerHTML=`<div class="step-eyebrow">Step 5 of 5</div><div class="step-title">Image communication plan</div><div class="step-sub">Based on your research, write one communication goal per image slot. Focus on what the customer should <em>understand or feel</em> — not what the image should look like. The designer handles that.</div><div class="callout"><div class="callout-title">The golden rule</div><div class="callout-body">If all text were removed from the image, would a customer still understand the point? If not — rethink the goal.</div></div>${mainSlot}<div class="section-label">Secondary images</div>${imgSlots}<div class="section-label">A+ content</div>${apSlots}`;
 }
 
+function wrap(text, maxLen) {
+  if (!text) return ['—'];
+  const words = text.split(' ');
+  const lines = [];
+  let line = '';
+  words.forEach(w => {
+    if ((line + ' ' + w).trim().length > maxLen) { lines.push(line.trim()); line = w; }
+    else line = (line + ' ' + w).trim();
+  });
+  if (line) lines.push(line.trim());
+  return lines.length ? lines : ['—'];
+}
+
 function exportPDF(){
   save();
-  const b=d.basics;
-  const posRows=d.poe.pos.filter(r=>r.topic).map(r=>`<tr><td>${r.topic}</td><td>${r.pct}</td><td>${r.quotes}</td></tr>`).join('');
-  const negRows=d.poe.neg.filter(r=>r.topic).map(r=>`<tr><td>${r.topic}</td><td>${r.pct}</td><td>${r.quotes}</td></tr>`).join('');
-  const retRows=d.poe.ret.filter(r=>r.topic).map(r=>`<tr><td>${r.topic}</td><td>${r.pct}</td><td>${r.quotes}</td></tr>`).join('');
-  const slotRows=[
-    {label:'Main image',val:d.plan.main,hint:'Pure white bg, no text'},
-    ...d.plan.images.map((v,i)=>({label:`Image ${i+1}`,val:v,hint:IMG_HINTS[i]})),
-    ...d.plan.aplus.map((v,i)=>({label:`A+ Module ${i+1}`,val:v,hint:APLUS_HINTS[i]}))
-  ].map(s=>`<tr><td style="width:140px;vertical-align:top"><strong>${s.label}</strong><br><span style="font-size:10px;color:#888">${s.hint}</span></td><td>${(s.val||'—').replace(/\n/g,'<br>')}</td></tr>`).join('');
-  const themeList=(d.comp.themes||[]).map(t=>`<span style="display:inline-block;background:#f0f0f0;border:1px solid #ddd;border-radius:3px;padding:1px 7px;margin:2px;font-size:10px">${t}</span>`).join(' ')||'—';
+  const btn = document.querySelector('.btn-export');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
 
-  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Listing Brief — ${b.name||b.asin||'Product'}</title>
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:Arial,sans-serif;font-size:12px;color:#222;background:#fff}
-  .page{max-width:720px;margin:0 auto;padding:2rem 2.5rem}
-  .header{border-bottom:3px solid #1A3C5E;padding-bottom:1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end}
-  .brand{font-size:10px;color:#E8732A;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem}
-  h1{font-size:20px;font-weight:bold;color:#1A3C5E;margin:0}
-  .meta{font-size:11px;color:#666;margin-top:.2rem}
-  h2{font-size:11px;font-weight:bold;color:#1A3C5E;margin:1.25rem 0 .5rem;padding-bottom:.25rem;border-bottom:2px solid #E8732A;text-transform:uppercase;letter-spacing:.06em}
-  h3{font-size:11px;font-weight:bold;margin:.75rem 0 .3rem}
-  table{width:100%;border-collapse:collapse;margin-bottom:.75rem;font-size:11px}
-  th{background:#1A3C5E;color:#fff;padding:.3rem .5rem;text-align:left;font-size:10px}
-  td{padding:.3rem .5rem;border:0.5px solid #ddd;vertical-align:top}
-  tr:nth-child(even) td{background:#f9f9f9}
-  p{margin-bottom:.4rem;font-size:11px;line-height:1.5}
-  .callout{background:#FDF3EC;border-left:3px solid #E8732A;padding:.5rem .75rem;margin-bottom:.6rem;font-size:11px;color:#555;border-radius:0 4px 4px 0}
-  .print-note{background:#f0f4f8;border:1px solid #ccd;border-radius:6px;padding:.75rem 1rem;margin-bottom:1.5rem;font-size:12px;color:#444;text-align:center}
-  .print-note strong{color:#1A3C5E}
-  @media print{.print-note{display:none}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-</style></head><body>
-<div class="page">
-  <div class="print-note">To save as PDF: press <strong>Ctrl+P</strong> (Windows) or <strong>Cmd+P</strong> (Mac) → change destination to <strong>Save as PDF</strong> → click Save</div>
-  <div class="header">
-    <div>
-      <div class="brand">Zulay Kitchen — Listing Image Brief</div>
-      <h1>${b.name||'Product'}</h1>
-      <div class="meta">${b.asin||''} &nbsp;·&nbsp; ${b.type||''} &nbsp;·&nbsp; Keyword: ${b.keyword||''}</div>
-    </div>
-    <div style="text-align:right;font-size:11px;color:#888">${b.requestor||''}<br>${b.date||''}</div>
-  </div>
-  ${b.type==='Refresh'&&b.refreshNote?`<div class="callout"><strong>Refresh note:</strong> ${b.refreshNote}</div>`:''}
-  <h2>POE Research</h2>
-  <h3 style="color:#2A5A0E">Positive topics</h3>
-  <table><thead><tr><th>Topic</th><th style="width:70px">% Mentions</th><th>Sample quotes</th></tr></thead><tbody>${posRows||'<tr><td colspan="3">—</td></tr>'}</tbody></table>
-  <h3 style="color:#7A1C1C">Negative topics</h3>
-  <table><thead><tr><th>Topic</th><th style="width:70px">% Mentions</th><th>Sample quotes</th></tr></thead><tbody>${negRows||'<tr><td colspan="3">—</td></tr>'}</tbody></table>
-  <h3 style="color:#7A4200">Return reasons</h3>
-  <table><thead><tr><th>Topic</th><th style="width:70px">% Mentions</th><th>Sample quotes</th></tr></thead><tbody>${retRows||'<tr><td colspan="3">—</td></tr>'}</tbody></table>
-  <h2>Competitor Research</h2>
-  <p><strong>Images doc:</strong> ${d.comp.link||'—'}</p>
-  <p><strong>Themes seen:</strong> ${themeList}</p>
-  <p><strong>Gaps:</strong> ${(d.comp.gaps||'—').replace(/\n/g,'<br>')}</p>
-  <h2>Product Differentiators</h2>
-  <p><strong>Spec sheet:</strong> ${d.diff.specLink||'—'}</p>
-  <p><strong>Materials & specs:</strong> ${(d.diff.materials||'—').replace(/\n/g,'<br>')}</p>
-  <p><strong>Unique features:</strong> ${(d.diff.features||'—').replace(/\n/g,'<br>')}</p>
-  <p><strong>Certifications:</strong> ${d.diff.certs||'—'}</p>
-  <h2>Image Communication Plan</h2>
-  <div class="callout">Golden rule: if all text were removed from the image, the customer should still understand the point.</div>
-  <table><thead><tr><th style="width:140px">Image slot</th><th>Communication goal</th></tr></thead><tbody>${slotRows}</tbody></table>
-</div>
-<script>window.onload=function(){setTimeout(function(){window.print();},800);}<\/script>
-</body></html>`;
+  try {
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+    const navy = [26, 60, 94];
+    const orange = [232, 115, 42];
+    const W = 210;
+    const margin = 15;
+    const contentW = W - margin * 2;
+    let y = 0;
 
-  const w=window.open('','_blank');
-  w.document.write(html);
-  w.document.close();
+    function newPage() { doc.addPage(); y = 15; }
+
+    function checkY(needed) { if (y + needed > 280) newPage(); }
+
+    function sectionHeader(title) {
+      checkY(12);
+      doc.setFillColor(...navy);
+      doc.rect(margin, y, contentW, 8, 'F');
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(9);
+      doc.setTextColor(255,255,255);
+      doc.text(title.toUpperCase(), margin + 3, y + 5.5);
+      y += 11;
+      doc.setTextColor(0,0,0);
+    }
+
+    function label(text) {
+      checkY(6);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(9);
+      doc.setTextColor(...navy);
+      doc.text(text, margin, y);
+      y += 5;
+      doc.setTextColor(0,0,0);
+    }
+
+    function bodyText(text) {
+      if (!text) return;
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(9);
+      doc.setTextColor(60,60,60);
+      const lines = doc.splitTextToSize(text, contentW);
+      lines.forEach(line => { checkY(5); doc.text(line, margin, y); y += 4.5; });
+      y += 2;
+      doc.setTextColor(0,0,0);
+    }
+
+    function poeTable(rows, headerColor) {
+      if (!rows.length) return;
+      doc.autoTable({
+        startY: y,
+        margin: {left: margin, right: margin},
+        head: [['Topic', '% Mentions', 'Sample quotes']],
+        body: rows.map(r => [r.topic, r.pct, r.quotes]),
+        headStyles: {fillColor: headerColor, fontSize: 8, fontStyle: 'bold'},
+        bodyStyles: {fontSize: 8},
+        columnStyles: {0:{cellWidth:45}, 1:{cellWidth:22}, 2:{cellWidth:contentW-67}},
+        alternateRowStyles: {fillColor: [249,249,249]},
+        tableLineColor: [220,220,220],
+        tableLineWidth: 0.1,
+      });
+      y = doc.lastAutoTable.finalY + 4;
+    }
+
+    function slotTable(rows) {
+      if (!rows.length) return;
+      doc.autoTable({
+        startY: y,
+        margin: {left: margin, right: margin},
+        head: [['Image slot', 'Communication goal']],
+        body: rows,
+        headStyles: {fillColor: navy, fontSize: 8, fontStyle: 'bold'},
+        bodyStyles: {fontSize: 8},
+        columnStyles: {0:{cellWidth:42}, 1:{cellWidth:contentW-42}},
+        alternateRowStyles: {fillColor: [249,249,249]},
+        tableLineColor: [220,220,220],
+        tableLineWidth: 0.1,
+      });
+      y = doc.lastAutoTable.finalY + 4;
+    }
+
+    // ── HEADER ──────────────────────────────────────────────
+    doc.setFillColor(...navy);
+    doc.rect(0, 0, W, 28, 'F');
+    doc.setFillColor(...orange);
+    doc.rect(0, 28, W, 2, 'F');
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7);
+    doc.setTextColor(232,115,42);
+    doc.text('ZULAY KITCHEN — LISTING IMAGE BRIEF', margin, 10);
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(16);
+    doc.setTextColor(255,255,255);
+    doc.text(d.basics.name || 'Product Brief', margin, 20);
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    doc.setTextColor(180,200,220);
+    const meta = [d.basics.asin, d.basics.type, d.basics.keyword ? `Keyword: ${d.basics.keyword}` : ''].filter(Boolean).join('  ·  ');
+    doc.text(meta, margin, 25.5);
+
+    if (d.basics.requestor || d.basics.date) {
+      doc.setTextColor(180,200,220);
+      doc.text([d.basics.requestor, d.basics.date].filter(Boolean).join('  ·  '), W - margin, 25.5, {align:'right'});
+    }
+
+    y = 36;
+    doc.setTextColor(0,0,0);
+
+    // ── SECTION 1: POE ───────────────────────────────────────
+    sectionHeader('POE Research');
+
+    const posData = d.poe.pos.filter(r=>r.topic);
+    const negData = d.poe.neg.filter(r=>r.topic);
+    const retData = d.poe.ret.filter(r=>r.topic);
+
+    if (posData.length) {
+      label('Positive topics');
+      poeTable(posData, [42,90,14]);
+    }
+    if (negData.length) {
+      label('Negative topics');
+      poeTable(negData, [122,28,28]);
+    }
+    if (retData.length) {
+      label('Return reasons');
+      poeTable(retData, [122,66,0]);
+    }
+
+    // ── SECTION 2: COMPETITORS ───────────────────────────────
+    sectionHeader('Competitor Research');
+    if (d.comp.link) { label('Images doc'); bodyText(d.comp.link); }
+    if (d.comp.themes && d.comp.themes.length) { label('Themes seen'); bodyText(d.comp.themes.join(', ')); }
+    if (d.comp.gaps) { label('Gaps — what competitors are not showing'); bodyText(d.comp.gaps); }
+
+    // ── SECTION 3: DIFFERENTIATORS ───────────────────────────
+    sectionHeader('Product Differentiators');
+    if (d.diff.specLink) { label('Spec sheet'); bodyText(d.diff.specLink); }
+    if (d.diff.materials) { label('Materials & specs'); bodyText(d.diff.materials); }
+    if (d.diff.features) { label('Unique features'); bodyText(d.diff.features); }
+    if (d.diff.certs) { label('Certifications'); bodyText(d.diff.certs); }
+
+    // ── SECTION 4: IMAGE PLAN ────────────────────────────────
+    sectionHeader('Image Communication Plan');
+
+    doc.setFont('helvetica','italic');
+    doc.setFontSize(8);
+    doc.setTextColor(...orange);
+    checkY(6);
+    doc.text('Golden rule: if all text were removed from the image, the customer should still understand the point.', margin, y);
+    y += 7;
+    doc.setTextColor(0,0,0);
+
+    const slotRows = [
+      ['Main image', d.plan.main || '—'],
+      ...d.plan.images.map((v,i) => [`Image ${i+1}`, v || '—']),
+      ...d.plan.aplus.map((v,i) => [`A+ Module ${i+1}`, v || '—'])
+    ];
+    slotTable(slotRows);
+
+    // ── FOOTER ───────────────────────────────────────────────
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(7);
+      doc.setTextColor(150,150,150);
+      doc.text(`Zulay Kitchen — Listing Image Brief  ·  Page ${i} of ${pageCount}`, W/2, 292, {align:'center'});
+    }
+
+    const filename = `Listing_Brief_${(d.basics.asin || d.basics.name || 'product').replace(/\s+/g,'_')}.pdf`;
+    doc.save(filename);
+
+  } catch(e) {
+    alert('Error generating PDF: ' + e.message);
+    console.error(e);
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Export PDF';
 }
 
 function render(){
