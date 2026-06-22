@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zulay Kitchen — Listing Image Request Wizard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#1A3C5E;--orange:#E8732A;--light:#F7F8FA;--border:#DDE2E8;--text:#1A1A1A;--muted:#666}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0F2F5;min-height:100vh;color:var(--text)}
+.wiz{max-width:660px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem}
+.brand{display:flex;align-items:center;gap:.6rem}
+.brand-dot{width:10px;height:10px;border-radius:50%;background:var(--orange)}
+.brand-name{font-size:13px;font-weight:600;color:var(--navy);letter-spacing:.04em;text-transform:uppercase}
+.step-counter{font-size:13px;color:#999;font-weight:500}
+.prog{display:flex;gap:5px;margin-bottom:2.5rem}
+.prog-dot{height:5px;flex:1;border-radius:3px;background:var(--border);transition:background .3s}
+.prog-dot.done{background:var(--navy)}
+.prog-dot.active{background:var(--orange)}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1rem;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.step-eyebrow{font-size:11px;font-weight:600;color:var(--orange);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem}
+.step-title{font-size:28px;font-weight:600;color:var(--navy);margin-bottom:.5rem;line-height:1.2}
+.step-sub{font-size:15px;color:var(--muted);line-height:1.65;margin-bottom:2rem}
+.callout{background:#FDF3EC;border-left:3px solid var(--orange);border-radius:0 10px 10px 0;padding:1rem 1.25rem;margin-bottom:1.75rem}
+.callout-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:.4rem}
+.callout-body{font-size:13px;color:#555;line-height:1.7}
+.callout ol{margin:.4rem 0 0 1.1rem;font-size:13px;color:#555;line-height:2.1}
+.field{margin-bottom:1.5rem}
+.field label{display:block;font-size:14px;font-weight:600;color:var(--navy);margin-bottom:.4rem}
+.field .sub{font-size:13px;color:#888;margin-bottom:.6rem;line-height:1.5}
+.field input[type=text],.field input[type=date],.field select,.field textarea{
+  width:100%;font-family:inherit;font-size:15px;color:var(--text);
+  background:#fff;border:1.5px solid var(--border);border-radius:10px;
+  padding:.75rem 1rem;transition:border-color .2s,box-shadow .2s;line-height:1.5
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,60,94,.08)
+}
+.field textarea{resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.poe-block{margin-bottom:1.75rem}
+.poe-block-title{display:flex;align-items:center;gap:.6rem;font-size:14px;font-weight:600;color:var(--navy);margin-bottom:.75rem}
+.badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.badge.pos{background:#EAF3DE;color:#2A5A0E}
+.badge.neg{background:#FCEBEB;color:#7A1C1C}
+.badge.ret{background:#FEF3E2;color:#7A4200}
+.poe-header{display:grid;grid-template-columns:1.1fr 70px 1.5fr;gap:8px;margin-bottom:5px;padding:0 2px}
+.poe-header span{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em}
+.poe-row{display:grid;grid-template-columns:1.1fr 70px 1.5fr;gap:8px;margin-bottom:7px}
+.poe-row input{font-family:inherit;font-size:13px;color:var(--text);background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:.55rem .75rem;width:100%;transition:border-color .2s}
+.poe-row input:focus{outline:none;border-color:var(--navy)}
+.themes{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.6rem}
+.theme-opt{display:flex;align-items:flex-start;gap:.6rem;background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:.65rem .85rem;cursor:pointer;transition:border-color .2s,background .2s}
+.theme-opt:hover{border-color:#bbb;background:#eef1f4}
+.theme-opt.selected{border-color:var(--navy);background:#EEF3F8}
+.theme-opt input{accent-color:var(--navy);width:15px;height:15px;flex-shrink:0;margin-top:1px}
+.theme-opt span{font-size:13px;color:#333;line-height:1.4}
+.section-label{font-size:11px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.07em;margin:1.25rem 0 .75rem}
+.comm-slot{background:var(--light);border:1.5px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:.85rem}
+.comm-slot-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.7rem}
+.slot-pill{background:var(--navy);color:#fff;font-size:11px;font-weight:600;padding:3px 12px;border-radius:20px;white-space:nowrap}
+.slot-hint{font-size:12px;color:#888;line-height:1.4;flex:1}
+.comm-slot textarea{font-family:inherit;font-size:14px;color:var(--text);background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:.65rem .9rem;width:100%;resize:vertical;transition:border-color .2s;line-height:1.55}
+.comm-slot textarea:focus{outline:none;border-color:var(--navy)}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:2rem}
+.btn{font-family:inherit;font-size:15px;font-weight:600;padding:.72rem 1.6rem;border-radius:10px;cursor:pointer;transition:all .15s;border:none;display:inline-flex;align-items:center;gap:.5rem}
+.btn-back{background:#fff;color:#555;border:1.5px solid var(--border)}
+.btn-back:hover{background:var(--light);border-color:#bbb}
+.btn-next{background:var(--navy);color:#fff}
+.btn-next:hover{background:#143152;transform:translateY(-1px)}
+.btn-export{background:var(--orange);color:#fff}
+.btn-export:hover{background:#d4661f;transform:translateY(-1px)}
+</style>
+</head>
+<body>
+<div class="wiz">
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div class="brand-name">Zulay Kitchen</div>
+    </div>
+    <div class="step-counter" id="stepCounter"></div>
+  </div>
+  <div class="prog" id="prog"></div>
+  <div class="card" id="stepWrap"></div>
+  <div class="nav" id="nav"></div>
+</div>
+
+<script>
+const STEPS=['Product','POE Research','Competitors','Differentiators','Image Plan'];
+let cur=0;
+const d={
+  basics:{asin:'',name:'',keyword:'',requestor:'',date:'',type:'New Listing',refreshNote:''},
+  poe:{
+    pos:Array.from({length:6},()=>({topic:'',pct:'',quotes:''})),
+    neg:Array.from({length:6},()=>({topic:'',pct:'',quotes:''})),
+    ret:Array.from({length:5},()=>({topic:'',pct:'',quotes:''}))
+  },
+  comp:{link:'',themes:[],gaps:''},
+  diff:{specLink:'',materials:'',features:'',certs:''},
+  plan:{main:'',images:Array(7).fill(''),aplus:Array(5).fill('')}
+};
+const THEME_LIST=['Dimensions & feature callout','Heat resistant / material safety','Use cases / versatility','Easy to clean / dishwasher safe','Lifestyle / in-use shot','Before & after comparison','How to use','Brand story / quality'];
+const IMG_HINTS=['Dimensions & key design features','Your #1 unique selling point','Performance proof — show it working','Feature deep-dive vs competitors','Heat resistance / material safety','Easy to clean / dishwasher safe','All use cases / versatility'];
+const APLUS_HINTS=['Brand hero & tagline','Key features deep-dive','Lifestyle / in-use','Comparison chart','Social proof & trust'];
+
+function prog(){
+  document.getElementById('prog').innerHTML=STEPS.map((_,i)=>`<div class="prog-dot ${i<cur?'done':i===cur?'active':''}"></div>`).join('');
+  document.getElementById('stepCounter').textContent=`Step ${cur+1} of ${STEPS.length}`;
+}
+
+function save(){
+  if(cur===0){['asin','name','keyword','requestor','date','type','refreshNote'].forEach(k=>{const el=document.getElementById('b_'+k);if(el)d.basics[k]=el.value;});}
+  if(cur===1){['pos','neg','ret'].forEach(type=>{d.poe[type].forEach((r,i)=>{['topic','pct','quotes'].forEach(k=>{const el=document.getElementById(`poe_${type}_${i}_${k}`);if(el)r[k]=el.value;});});});}
+  if(cur===2){const lk=document.getElementById('comp_link');if(lk)d.comp.link=lk.value;d.comp.themes=THEME_LIST.filter((_,i)=>{const el=document.getElementById(`th_${i}`);return el&&el.checked;});const gp=document.getElementById('comp_gaps');if(gp)d.comp.gaps=gp.value;}
+  if(cur===3){['specLink','materials','features','certs'].forEach(k=>{const el=document.getElementById('df_'+k);if(el)d.diff[k]=el.value;});}
+  if(cur===4){const m=document.getElementById('plan_main');if(m)d.plan.main=m.value;d.plan.images=d.plan.images.map((_,i)=>{const el=document.getElementById(`plan_img_${i}`);return el?el.value:'';});d.plan.aplus=d.plan.aplus.map((_,i)=>{const el=document.getElementById(`plan_ap_${i}`);return el?el.value:'';});}
+}
+
+function fld(id,label,sub,type,val,ph,rows){
+  const hint=sub?`<div class="sub">${sub}</div>`:'';
+  if(type==='textarea')return `<div class="field"><label>${label}</label>${hint}<textarea id="${id}" rows="${rows||3}" placeholder="${ph||''}">${val||''}</textarea></div>`;
+  if(type==='select')return `<div class="field"><label>${label}</label>${hint}<select id="${id}"><option ${val==='New Listing'?'selected':''}>New Listing</option><option ${val==='Refresh'?'selected':''}>Refresh</option></select></div>`;
+  if(type==='date')return `<div class="field"><label>${label}</label>${hint}<input type="date" id="${id}" value="${val||''}"></div>`;
+  return `<div class="field"><label>${label}</label>${hint}<input type="text" id="${id}" value="${val||''}" placeholder="${ph||''}"></div>`;
+}
+
+function poeRows(arr,prefix){return arr.map((r,i)=>`<div class="poe-row"><input type="text" id="poe_${prefix}_${i}_topic" value="${r.topic}" placeholder="e.g. Ease of Cleaning"><input type="text" id="poe_${prefix}_${i}_pct" value="${r.pct}" placeholder="14%"><input type="text" id="poe_${prefix}_${i}_quotes" value="${r.quotes}" placeholder='"Hard to Clean"'></div>`).join('');}
+
+function step0(c){
+  c.innerHTML=`<div class="step-eyebrow">Step 1 of 5</div><div class="step-title">Product basics</div><div class="step-sub">Start here before doing any research.</div><div class="row2">${fld('b_asin','ASIN','','text',d.basics.asin,'B0XXXXXXXX')}${fld('b_type','Request type','','select',d.basics.type)}</div>${fld('b_name','Product name','','text',d.basics.name,'e.g. ZK - Meat Chopper - Comfy Grip - Black')}${fld('b_keyword','Primary keyword','The #1 search term customers use to find this product.','text',d.basics.keyword,'e.g. meat masher')}<div class="row2">${fld('b_requestor','Your name','','text',d.basics.requestor,'')}${fld('b_date','Target launch date','','date',d.basics.date)}</div>${d.basics.type==='Refresh'?fld('b_refreshNote','What is underperforming?','Describe what is wrong with the current images.','textarea',d.basics.refreshNote,'',3):''}`;
+  document.getElementById('b_type').addEventListener('change',function(){d.basics.type=this.value;const existing=document.getElementById('b_refreshNote');if(this.value==='Refresh'&&!existing){const div=document.createElement('div');div.innerHTML=fld('b_refreshNote','What is underperforming?','Describe what is wrong with the current images.','textarea','','',3);c.appendChild(div.firstChild);}});
+}
+
+function step1(c){
+  c.innerHTML=`<div class="step-eyebrow">Step 2 of 5</div><div class="step-title">POE research</div><div class="step-sub">Pull this directly from Amazon Seller Central. Real data only — no AI, no guessing.</div><div class="callout"><div class="callout-title">How to pull this data</div><ol><li>Go to <strong>Seller Central → Growth → Product Opportunity Explorer</strong></li><li>Search your primary keyword and click the matching niche</li><li>Open <strong>Customer Review Insights</strong> — toggle Positive and Negative topics</li><li>Open <strong>Returns</strong> tab for return reasons</li><li>Enter each topic, % mention rate, and 2–3 sample quotes below</li></ol></div><div class="poe-block"><div class="poe-block-title"><span class="badge pos">Positive topics</span></div><div class="poe-header"><span>Topic</span><span>% Mentions</span><span>Sample quotes</span></div>${poeRows(d.poe.pos,'pos')}</div><div class="poe-block"><div class="poe-block-title"><span class="badge neg">Negative topics</span></div><div class="poe-header"><span>Topic</span><span>% Mentions</span><span>Sample quotes</span></div>${poeRows(d.poe.neg,'neg')}</div><div class="poe-block"><div class="poe-block-title"><span class="badge ret">Return reasons</span></div><div class="poe-header"><span>Topic</span><span>% Mentions</span><span>Sample quotes</span></div>${poeRows(d.poe.ret,'ret')}</div>`;
+}
+
+function step2(c){
+  const themeHTML=THEME_LIST.map((t,i)=>`<label class="theme-opt ${(d.comp.themes||[]).includes(t)?'selected':''}" id="thlabel_${i}"><input type="checkbox" id="th_${i}" ${(d.comp.themes||[]).includes(t)?'checked':''}><span>${t}</span></label>`).join('');
+  c.innerHTML=`<div class="step-eyebrow">Step 3 of 5</div><div class="step-title">Competitor research</div><div class="step-sub">Search your keyword on Amazon. Open the top 3–5 products. Look at every image and note what communication points they cover.</div>${fld('comp_link','Competitor images doc','Optional — paste a Canva or Google Slides link if you compiled screenshots.','text',d.comp.link,'https://www.canva.com/...')}<div class="field"><label>What themes are competitors covering?</label><div class="sub">Check everything appearing across 2 or more competitor listings.</div><div class="themes">${themeHTML}</div></div>${fld('comp_gaps','What are competitors NOT showing?','Based on your POE data — what customer pain points are absent from competitor listings?','textarea',d.comp.gaps,'e.g. No competitor shows a before/after of chopped vs unchopped meat',3)}`;
+  THEME_LIST.forEach((_,i)=>{const cb=document.getElementById(`th_${i}`);const lb=document.getElementById(`thlabel_${i}`);if(cb&&lb)cb.addEventListener('change',()=>lb.classList.toggle('selected',cb.checked));});
+}
+
+function step3(c){
+  c.innerHTML=`<div class="step-eyebrow">Step 4 of 5</div><div class="step-title">Product differentiators</div><div class="step-sub">What makes this product different from everything else on the page? Pull the spec sheet and physically look at the product.</div>${fld('df_specLink','Spec sheet link','Dropbox or Drive link.','text',d.diff.specLink,'')}${fld('df_materials','Key materials & specs','Include material names, heat resistance ratings, certifications.','textarea',d.diff.materials,'e.g. Nylon head (heat resistant to 356°F), TPR handle, BPA Free, dishwasher safe',3)}${fld('df_features','Unique physical features','What does this product have that competitors lack?','textarea',d.diff.features,'e.g. Thumb divot on handle, one-piece tapered neck, reinforced neck-to-head connection',3)}${fld('df_certs','Certifications & claims','','text',d.diff.certs,'e.g. BPA Free, FDA compliant')}`;
+}
+
+function step4(c){
+  const mainSlot=`<div class="comm-slot"><div class="comm-slot-header"><span class="slot-pill">Main image</span><span class="slot-hint">Pure white background, product fills 85%+ of frame, no text. Show all color variants.</span></div><textarea id="plan_main" rows="2" placeholder="What should the main image communicate about this product?">${d.plan.main||''}</textarea></div>`;
+  const imgSlots=d.plan.images.map((_,i)=>`<div class="comm-slot"><div class="comm-slot-header"><span class="slot-pill">Image ${i+1}</span><span class="slot-hint">${IMG_HINTS[i]}</span></div><textarea id="plan_img_${i}" rows="2" placeholder="What should this image make the customer understand or feel?">${d.plan.images[i]||''}</textarea></div>`).join('');
+  const apSlots=d.plan.aplus.map((_,i)=>`<div class="comm-slot"><div class="comm-slot-header"><span class="slot-pill">A+ Module ${i+1}</span><span class="slot-hint">${APLUS_HINTS[i]}</span></div><textarea id="plan_ap_${i}" rows="2" placeholder="What should this module communicate?">${d.plan.aplus[i]||''}</textarea></div>`).join('');
+  c.innerHTML=`<div class="step-eyebrow">Step 5 of 5</div><div class="step-title">Image communication plan</div><div class="step-sub">Based on your research, write one communication goal per image slot. Focus on what the customer should <em>understand or feel</em> — not what the image should look like. The designer handles that.</div><div class="callout"><div class="callout-title">The golden rule</div><div class="callout-body">If all text were removed from the image, would a customer still understand the point? If not — rethink the goal.</div></div>${mainSlot}<div class="section-label">Secondary images</div>${imgSlots}<div class="section-label">A+ content</div>${apSlots}`;
+}
+
+function exportBrief(){
+  const b=d.basics;
+  const posRows=d.poe.pos.filter(r=>r.topic).map(r=>`<tr><td>${r.topic}</td><td>${r.pct}</td><td>${r.quotes}</td></tr>`).join('');
+  const negRows=d.poe.neg.filter(r=>r.topic).map(r=>`<tr><td>${r.topic}</td><td>${r.pct}</td><td>${r.quotes}</td></tr>`).join('');
+  const retRows=d.poe.ret.filter(r=>r.topic).map(r=>`<tr><td>${r.topic}</td><td>${r.pct}</td><td>${r.quotes}</td></tr>`).join('');
+  const slotRows=[{label:'Main image',val:d.plan.main,hint:'Pure white bg, no text'},...d.plan.images.map((v,i)=>({label:`Image ${i+1}`,val:v,hint:IMG_HINTS[i]})),...d.plan.aplus.map((v,i)=>({label:`A+ Module ${i+1}`,val:v,hint:APLUS_HINTS[i]}))].map(s=>`<tr><td><strong>${s.label}</strong><br><span style="font-size:10px;color:#888">${s.hint}</span></td><td>${s.val||'—'}</td></tr>`).join('');
+  const themeList=(d.comp.themes||[]).map(t=>`<span style="display:inline-block;background:#f0f0f0;border:1px solid #ddd;border-radius:4px;padding:2px 8px;margin:2px;font-size:11px">${t}</span>`).join(' ')||'—';
+  const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Listing Brief — ${b.name||b.asin}</title><style>body{font-family:Arial,sans-serif;font-size:12px;color:#222;margin:0;padding:0}.page{max-width:700px;margin:0 auto;padding:2.5rem 2rem}.header{border-bottom:3px solid #1A3C5E;padding-bottom:1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end}.brand{font-size:10px;color:#E8732A;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem}h1{font-size:22px;color:#1A3C5E;margin:0}.meta{font-size:11px;color:#666;margin-top:.25rem}h2{font-size:12px;font-weight:bold;color:#1A3C5E;margin:1.5rem 0 .6rem;padding-bottom:.3rem;border-bottom:2px solid #E8732A;text-transform:uppercase;letter-spacing:.05em}table{width:100%;border-collapse:collapse;margin-bottom:1rem;font-size:12px}th{background:#1A3C5E;color:#fff;padding:.35rem .6rem;text-align:left;font-size:11px}td{padding:.35rem .6rem;border:0.5px solid #ddd;vertical-align:top}tr:nth-child(even) td{background:#f9f9f9}.kv{font-size:12px;margin-bottom:.75rem}.kv dt{color:#888;font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin-top:.5rem}.kv dd{color:#222;margin:.15rem 0 0}.callout{background:#FDF3EC;border-left:3px solid #E8732A;padding:.6rem .9rem;margin-bottom:.75rem;font-size:12px;color:#555;border-radius:0 6px 6px 0}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="page"><div class="header"><div><div class="brand">Zulay Kitchen — Listing Image Brief</div><h1>${b.name||'Product'}</h1><div class="meta">${b.asin||''} &nbsp;·&nbsp; ${b.type||''} &nbsp;·&nbsp; Keyword: ${b.keyword||''}</div></div><div style="text-align:right;font-size:11px;color:#888">${b.requestor||''}<br>${b.date||''}</div></div>${b.type==='Refresh'&&b.refreshNote?`<div class="callout"><strong>Refresh note:</strong> ${b.refreshNote}</div>`:''}<h2>POE research</h2><table><thead><tr><th>Positive topic</th><th style="width:80px">% Mentions</th><th>Sample quotes</th></tr></thead><tbody>${posRows||'<tr><td colspan=3>—</td></tr>'}</tbody></table><table><thead><tr><th>Negative topic</th><th style="width:80px">% Mentions</th><th>Sample quotes</th></tr></thead><tbody>${negRows||'<tr><td colspan=3>—</td></tr>'}</tbody></table><table><thead><tr><th>Return reason</th><th style="width:80px">% Mentions</th><th>Sample quotes</th></tr></thead><tbody>${retRows||'<tr><td colspan=3>—</td></tr>'}</tbody></table><h2>Competitor research</h2><dl class="kv"><dt>Images doc</dt><dd>${d.comp.link||'—'}</dd><dt>Themes seen</dt><dd style="margin-top:.3rem">${themeList}</dd></dl><p style="font-size:12px"><strong>Gaps:</strong> ${d.comp.gaps||'—'}</p><h2>Product differentiators</h2><dl class="kv"><dt>Spec sheet</dt><dd>${d.diff.specLink||'—'}</dd><dt>Materials & specs</dt><dd>${(d.diff.materials||'—').replace(/\n/g,'<br>')}</dd><dt>Unique features</dt><dd>${(d.diff.features||'—').replace(/\n/g,'<br>')}</dd><dt>Certifications</dt><dd>${d.diff.certs||'—'}</dd></dl><h2>Image communication plan</h2><div class="callout">Golden rule: if all text were removed from the image, the customer should still understand the point.</div><table><thead><tr><th style="width:150px">Image slot</th><th>Communication goal</th></tr></thead><tbody>${slotRows}</tbody></table></div></body></html>`;
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`Listing_Brief_${(b.asin||'product').replace(/\s/g,'_')}.html`;
+  a.click();URL.revokeObjectURL(url);
+}
+
+function render(){
+  prog();
+  const w=document.getElementById('stepWrap');
+  w.innerHTML='';
+  [step0,step1,step2,step3,step4][cur](w);
+  const nav=document.getElementById('nav');
+  nav.innerHTML='';
+  if(cur>0){const b=document.createElement('button');b.className='btn btn-back';b.innerHTML='← Back';b.onclick=()=>{save();cur--;render();window.scrollTo(0,0);};nav.appendChild(b);}
+  else nav.appendChild(document.createElement('div'));
+  const f=document.createElement('button');
+  if(cur<STEPS.length-1){f.className='btn btn-next';f.textContent='Continue →';f.onclick=()=>{save();cur++;render();window.scrollTo(0,0);};}
+  else{f.className='btn btn-export';f.innerHTML='Export brief';f.onclick=()=>{save();exportBrief();};}
+  nav.appendChild(f);
+}
+render();
+</script>
+</body>
+</html>
