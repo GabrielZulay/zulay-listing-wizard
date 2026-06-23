@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><!-- v5 -->
+<html lang="en"><!-- v6 -->
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,7 +11,7 @@
 :root{--navy:#1A3C5E;--orange:#E8732A;--light:#F7F8FA;--border:#DDE2E8;--text:#1A1A1A;--muted:#666}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0F2F5;min-height:100vh;color:var(--text);margin:0;padding:0}
 .wiz{max-width:100%;margin:0 auto;padding:2.5rem 4rem 5rem}
-.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
 .brand{display:flex;align-items:center;gap:.6rem}
 .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--orange)}
 .brand-name{font-size:13px;font-weight:600;color:var(--navy);letter-spacing:.04em;text-transform:uppercase}
@@ -20,7 +20,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .prog-dot{height:5px;flex:1;border-radius:3px;background:var(--border);transition:background .3s}
 .prog-dot.done{background:var(--navy)}
 .prog-dot.active{background:var(--orange)}
-.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:2.5rem;margin-bottom:1rem;box-shadow:0 1px 4px rgba(0,0,0,.04);width:100%;max-width:100%}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:2.5rem;margin-bottom:1rem;box-shadow:0 1px 4px rgba(0,0,0,.04);width:100%}
 .step-eyebrow{font-size:11px;font-weight:600;color:var(--orange);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem}
 .step-title{font-size:28px;font-weight:600;color:var(--navy);margin-bottom:.5rem;line-height:1.2}
 .step-sub{font-size:15px;color:var(--muted);line-height:1.65;margin-bottom:2rem}
@@ -28,6 +28,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .callout-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:.4rem}
 .callout-body{font-size:13px;color:#555;line-height:1.7}
 .callout ol{margin:.4rem 0 0 1.1rem;font-size:13px;color:#555;line-height:2.1}
+.callout-info{background:#EEF3F8;border-left:3px solid var(--navy);border-radius:0 10px 10px 0;padding:1rem 1.25rem;margin-bottom:1.75rem}
+.callout-info .callout-title{color:var(--navy)}
+.callout-info .callout-body{color:#444}
 .field{margin-bottom:1.5rem}
 .field label{display:block;font-size:14px;font-weight:600;color:var(--navy);margin-bottom:.4rem}
 .field .sub{font-size:13px;color:#888;margin-bottom:.6rem;line-height:1.5}
@@ -41,17 +44,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge.pos{background:#EAF3DE;color:#2A5A0E}
 .badge.neg{background:#FCEBEB;color:#7A1C1C}
 .badge.ret{background:#FEF3E2;color:#7A4200}
+.badge.gap{background:#FDF3EC;color:#A0420A}
+.badge.usp{background:#EEF3F8;color:#1A3C5E}
 .poe-header{display:grid;grid-template-columns:1fr 80px 2.5fr;gap:8px;margin-bottom:5px;padding:0 2px}
 .poe-header span{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em}
 .poe-row{display:grid;grid-template-columns:1fr 80px 2.5fr;gap:8px;margin-bottom:7px}
 .poe-row input{font-family:inherit;font-size:13px;color:var(--text);background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:.55rem .75rem;width:100%;transition:border-color .2s}
 .poe-row input:focus{outline:none;border-color:var(--navy)}
-.themes{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.6rem}
-.theme-opt{display:flex;align-items:flex-start;gap:.6rem;background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:.65rem .85rem;cursor:pointer;transition:border-color .2s,background .2s}
-.theme-opt:hover{border-color:#bbb;background:#eef1f4}
-.theme-opt.selected{border-color:var(--navy);background:#EEF3F8}
-.theme-opt input{accent-color:var(--navy);width:15px;height:15px;flex-shrink:0;margin-top:1px}
-.theme-opt span{font-size:13px;color:#333;line-height:1.4}
+.comp-topic-list{display:flex;flex-direction:column;gap:.5rem;margin-top:.6rem}
+.comp-topic-item{display:flex;align-items:center;gap:.75rem;background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:.65rem 1rem;cursor:pointer;transition:border-color .2s,background .2s}
+.comp-topic-item:hover{border-color:#bbb}
+.comp-topic-item.covered{border-color:#2A5A0E;background:#EAF3DE}
+.comp-topic-item.covered .topic-name{color:#2A5A0E}
+.comp-topic-item input[type=checkbox]{accent-color:var(--navy);width:16px;height:16px;flex-shrink:0}
+.topic-name{font-size:14px;font-weight:500;flex:1}
+.topic-pct{font-size:12px;color:#888;margin-left:auto}
+.topic-type-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px}
+.topic-type-badge.pos{background:#EAF3DE;color:#2A5A0E}
+.topic-type-badge.neg{background:#FCEBEB;color:#7A1C1C}
+.gap-list{display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem}
+.gap-item{background:#FDF3EC;border:1.5px solid #F5C4A0;border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem}
+.gap-item.usp-item{background:#EEF3F8;border-color:#B5D0E8}
+.gap-icon{font-size:16px}
+.gap-text{font-size:13px;color:#333;flex:1}
+.gap-pct{font-size:12px;color:#888}
+.section-divider{font-size:11px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.07em;margin:1.5rem 0 .75rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
 .section-label{font-size:11px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.07em;margin:1.25rem 0 .75rem}
 .comm-slot{background:var(--light);border:1.5px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:.85rem}
 .comm-slot-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.7rem}
@@ -67,16 +84,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-next:hover{background:#143152}
 .btn-export{background:var(--orange);color:#fff}
 .btn-export:hover{background:#d4661f}
-.btn-export:disabled{background:#ccc;cursor:not-allowed;transform:none}
+.btn-export:disabled{background:#ccc;cursor:not-allowed}
+.empty-state{text-align:center;padding:2rem;color:#aaa;font-size:13px;background:var(--light);border-radius:10px;border:1.5px dashed var(--border)}
 </style>
 </head>
 <body>
 <div class="wiz">
   <div class="top-bar">
-    <div class="brand">
-      <div class="brand-dot"></div>
-      <div class="brand-name">Zulay Kitchen</div>
-    </div>
+    <div class="brand"><div class="brand-dot"></div><div class="brand-name">Zulay Kitchen</div></div>
     <div class="step-counter" id="stepCounter"></div>
   </div>
   <div class="prog" id="prog"></div>
@@ -85,7 +100,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <script>
-const STEPS=['Product','POE Research','Competitors','Differentiators','Image Plan'];
+const STEPS=['Product','POE Research','Competitors','Differentiators','Gap Analysis','Image Plan'];
 let cur=0;
 const d={
   basics:{asin:'',name:'',keyword:'',requestor:'',date:'',type:'New Listing',refreshNote:''},
@@ -94,13 +109,31 @@ const d={
     neg:Array.from({length:6},()=>({topic:'',pct:'',quotes:''})),
     ret:Array.from({length:5},()=>({topic:'',pct:'',quotes:''}))
   },
-  comp:{link:'',themes:[],gaps:''},
-  diff:{specLink:'',materials:'',features:'',certs:''},
+  comp:{link:'',coveredTopics:[],notes:''},
+  diff:{specLink:'',features:'',certs:''},
   plan:{main:'',images:Array(7).fill(''),aplus:Array(5).fill('')}
 };
-const THEME_LIST=['Dimensions & feature callout','Heat resistant / material safety','Use cases / versatility','Easy to clean / dishwasher safe','Lifestyle / in-use shot','Before & after comparison','How to use','Brand story / quality'];
-const IMG_HINTS=['Dimensions & key design features','Your #1 unique selling point','Performance proof — show it working','Feature deep-dive vs competitors','Heat resistance / material safety','Easy to clean / dishwasher safe','All use cases / versatility'];
+
+const IMG_HINTS=['Dimensions & key design features','Your #1 unique selling point or gap opportunity','Performance proof — show it working','Feature deep-dive vs competitors','Heat resistance / material safety','Easy to clean / dishwasher safe','All use cases / versatility'];
 const APLUS_HINTS=['Brand hero & tagline','Key features deep-dive','Lifestyle / in-use','Comparison chart','Social proof & trust'];
+
+function setVal(id,val){const el=document.getElementById(id);if(el)el.value=val||'';}
+
+function getAllPOETopics(){
+  const topics=[];
+  d.poe.pos.filter(r=>r.topic).forEach(r=>topics.push({topic:r.topic,pct:r.pct,type:'pos'}));
+  d.poe.neg.filter(r=>r.topic).forEach(r=>topics.push({topic:r.topic,pct:r.pct,type:'neg'}));
+  return topics;
+}
+
+function getGaps(){
+  return getAllPOETopics().filter(t=>!d.comp.coveredTopics.includes(t.topic));
+}
+
+function getUSPs(){
+  if(!d.diff.features) return [];
+  return d.diff.features.split('\n').map(s=>s.trim()).filter(Boolean);
+}
 
 function prog(){
   document.getElementById('prog').innerHTML=STEPS.map((_,i)=>`<div class="prog-dot ${i<cur?'done':i===cur?'active':''}"></div>`).join('');
@@ -110,265 +143,302 @@ function prog(){
 function save(){
   if(cur===0){['asin','name','keyword','requestor','date','type','refreshNote'].forEach(k=>{const el=document.getElementById('b_'+k);if(el)d.basics[k]=el.value;});}
   if(cur===1){['pos','neg','ret'].forEach(type=>{d.poe[type].forEach((r,i)=>{['topic','pct','quotes'].forEach(k=>{const el=document.getElementById(`poe_${type}_${i}_${k}`);if(el)r[k]=el.value;});});});}
-  if(cur===2){const lk=document.getElementById('comp_link');if(lk)d.comp.link=lk.value;d.comp.themes=THEME_LIST.filter((_,i)=>{const el=document.getElementById(`th_${i}`);return el&&el.checked;});const gp=document.getElementById('comp_gaps');if(gp)d.comp.gaps=gp.value;}
-  if(cur===3){['specLink','materials','features','certs'].forEach(k=>{const el=document.getElementById('df_'+k);if(el)d.diff[k]=el.value;});}
-  if(cur===4){const m=document.getElementById('plan_main');if(m)d.plan.main=m.value;d.plan.images=d.plan.images.map((_,i)=>{const el=document.getElementById(`plan_img_${i}`);return el?el.value:'';});d.plan.aplus=d.plan.aplus.map((_,i)=>{const el=document.getElementById(`plan_ap_${i}`);return el?el.value:'';});}
+  if(cur===2){
+    const lk=document.getElementById('comp_link');if(lk)d.comp.link=lk.value;
+    const nt=document.getElementById('comp_notes');if(nt)d.comp.notes=nt.value;
+    d.comp.coveredTopics=getAllPOETopics().filter((_,i)=>{const el=document.getElementById(`ct_${i}`);return el&&el.checked;}).map(t=>t.topic);
+  }
+  if(cur===3){['specLink','features','certs'].forEach(k=>{const el=document.getElementById('df_'+k);if(el)d.diff[k]=el.value;});}
+  if(cur===5){const m=document.getElementById('plan_main');if(m)d.plan.main=m.value;d.plan.images=d.plan.images.map((_,i)=>{const el=document.getElementById(`plan_img_${i}`);return el?el.value:'';});d.plan.aplus=d.plan.aplus.map((_,i)=>{const el=document.getElementById(`plan_ap_${i}`);return el?el.value:'';});}
 }
 
-function fld(id,label,sub,type,val,ph,rows){
-  const hint=sub?`<div class="sub">${sub}</div>`:'';
-  if(type==='textarea')return `<div class="field"><label>${label}</label>${hint}<textarea id="${id}" rows="${rows||3}" placeholder="${ph||''}"></textarea></div>`;
-  if(type==='select')return `<div class="field"><label>${label}</label>${hint}<select id="${id}"><option ${val==='New Listing'?'selected':''}>New Listing</option><option ${val==='Refresh'?'selected':''}>Refresh</option></select></div>`;
-  if(type==='date')return `<div class="field"><label>${label}</label>${hint}<input type="date" id="${id}"></div>`;
-  return `<div class="field"><label>${label}</label>${hint}<input type="text" id="${id}" placeholder="${ph||''}"></div>`;
+function poeRows(arr,prefix){
+  return arr.map((r,i)=>`<div class="poe-row">
+    <input type="text" id="poe_${prefix}_${i}_topic" placeholder="e.g. Ease of Cleaning">
+    <input type="text" id="poe_${prefix}_${i}_pct" placeholder="14%">
+    <input type="text" id="poe_${prefix}_${i}_quotes" placeholder='"Hard to Clean"'>
+  </div>`).join('');
 }
-function restoreBasics(){['asin','name','keyword','requestor','date','type','refreshNote'].forEach(k=>setVal('b_'+k,d.basics[k]));}
-function restoreDiff(){['specLink','materials','features','certs'].forEach(k=>setVal('df_'+k,d.diff[k]));}
-function restoreComp(){setVal('comp_link',d.comp.link);setVal('comp_gaps',d.comp.gaps);}
-function restorePlan(){setVal('plan_main',d.plan.main);d.plan.images.forEach((_,i)=>setVal(`plan_img_${i}`,d.plan.images[i]));d.plan.aplus.forEach((_,i)=>setVal(`plan_ap_${i}`,d.plan.aplus[i]));}
 
-function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
-function setVal(id,val){const el=document.getElementById(id);if(el)el.value=val||'';}
-function poeRows(arr,prefix){return arr.map((r,i)=>`<div class="poe-row"><input type="text" id="poe_${prefix}_${i}_topic" placeholder="e.g. Ease of Cleaning"><input type="text" id="poe_${prefix}_${i}_pct" placeholder="14%"><input type="text" id="poe_${prefix}_${i}_quotes" placeholder='"Hard to Clean"'></div>`).join('');}
 function restorePOE(){['pos','neg','ret'].forEach(type=>{d.poe[type].forEach((r,i)=>{setVal(`poe_${type}_${i}_topic`,r.topic);setVal(`poe_${type}_${i}_pct`,r.pct);setVal(`poe_${type}_${i}_quotes`,r.quotes);});});}
 
+// ── STEP 0: Product Basics ────────────────────────────────────
 function step0(c){
-  c.innerHTML=`<div class="step-eyebrow">Step 1 of 5</div><div class="step-title">Product basics</div><div class="step-sub">Start here before doing any research.</div><div class="row2">${fld('b_asin','ASIN','','text',d.basics.asin,'B0XXXXXXXX')}${fld('b_type','Request type','','select',d.basics.type)}</div>${fld('b_name','Product name','','text',d.basics.name,'e.g. ZK - Meat Chopper - Comfy Grip - Black')}${fld('b_keyword','Primary keyword','The #1 search term customers use to find this product.','text',d.basics.keyword,'e.g. meat masher')}<div class="row2">${fld('b_requestor','Your name','','text',d.basics.requestor,'')}${fld('b_date','Target launch date','','date',d.basics.date)}</div>${d.basics.type==='Refresh'?fld('b_refreshNote','What is underperforming?','Describe what is wrong with the current images.','textarea',d.basics.refreshNote,'',3):''}`;
-  restoreBasics();document.getElementById('b_type').addEventListener('change',function(){d.basics.type=this.value;const existing=document.getElementById('b_refreshNote');if(this.value==='Refresh'&&!existing){const div=document.createElement('div');div.innerHTML=fld('b_refreshNote','What is underperforming?','Describe what is wrong with the current images.','textarea','','',3);c.appendChild(div.firstChild);}});
+  c.innerHTML=`
+    <div class="step-eyebrow">Step 1 of 6</div>
+    <div class="step-title">Product basics</div>
+    <div class="step-sub">Start here before doing any research.</div>
+    <div class="row2">
+      <div class="field"><label>ASIN</label><input type="text" id="b_asin" placeholder="B0XXXXXXXX"></div>
+      <div class="field"><label>Request type</label><select id="b_type"><option>New Listing</option><option>Refresh</option></select></div>
+    </div>
+    <div class="field"><label>Product name</label><input type="text" id="b_name" placeholder="e.g. ZK - Meat Chopper - Comfy Grip - Black"></div>
+    <div class="field"><label>Primary keyword</label><div class="sub">The #1 search term customers use to find this product.</div><input type="text" id="b_keyword" placeholder="e.g. meat masher"></div>
+    <div class="row2">
+      <div class="field"><label>Your name</label><input type="text" id="b_requestor"></div>
+      <div class="field"><label>Target launch date</label><input type="date" id="b_date"></div>
+    </div>
+    <div id="refreshWrap"></div>
+  `;
+  setVal('b_asin',d.basics.asin);setVal('b_name',d.basics.name);setVal('b_keyword',d.basics.keyword);
+  setVal('b_requestor',d.basics.requestor);setVal('b_date',d.basics.date);
+  document.getElementById('b_type').value=d.basics.type||'New Listing';
+  if(d.basics.type==='Refresh') showRefresh();
+  document.getElementById('b_type').addEventListener('change',function(){d.basics.type=this.value;if(this.value==='Refresh')showRefresh();else document.getElementById('refreshWrap').innerHTML='';});
 }
+function showRefresh(){
+  document.getElementById('refreshWrap').innerHTML=`<div class="field"><label>What is underperforming?</label><div class="sub">Describe what is wrong with the current images.</div><textarea id="b_refreshNote" rows="3"></textarea></div>`;
+  setVal('b_refreshNote',d.basics.refreshNote);
+}
+
+// ── STEP 1: POE Research ─────────────────────────────────────
 function step1(c){
-  c.innerHTML=`<div class="step-eyebrow">Step 2 of 5</div><div class="step-title">POE research</div><div class="step-sub">Pull this directly from Amazon Seller Central. Real data only — no AI, no guessing.</div><div class="callout"><div class="callout-title">How to pull this data</div><ol><li>Go to <strong>Seller Central → Growth → Product Opportunity Explorer</strong></li><li>Search your primary keyword and click the matching niche</li><li>Open <strong>Customer Review Insights</strong> — toggle Positive and Negative topics</li><li>Open <strong>Returns</strong> tab for return reasons</li><li>Enter each topic, % mention rate, and 2–3 sample quotes below</li></ol></div><div class="poe-block"><div class="poe-block-title"><span class="badge pos">Positive topics</span></div><div class="poe-header"><span>Topic</span><span>% Mentions</span><span>Sample quotes</span></div>${poeRows(d.poe.pos,'pos')}</div><div class="poe-block"><div class="poe-block-title"><span class="badge neg">Negative topics</span></div><div class="poe-header"><span>Topic</span><span>% Mentions</span><span>Sample quotes</span></div>${poeRows(d.poe.neg,'neg')}</div><div class="poe-block"><div class="poe-block-title"><span class="badge ret">Return reasons</span></div><div class="poe-header"><span>Topic</span><span>% Mentions</span><span>Sample quotes</span></div>${poeRows(d.poe.ret,'ret')}</div>`;
+  c.innerHTML=`
+    <div class="step-eyebrow">Step 2 of 6</div>
+    <div class="step-title">POE research</div>
+    <div class="step-sub">Pull this directly from Amazon Seller Central. Real data only — no AI, no guessing.</div>
+    <div class="callout">
+      <div class="callout-title">How to pull this data</div>
+      <ol>
+        <li>Go to <strong>Seller Central → Growth → Product Opportunity Explorer</strong></li>
+        <li>Search your primary keyword and click the matching niche</li>
+        <li>Open <strong>Customer Review Insights</strong> — toggle Positive and Negative topics</li>
+        <li>Open <strong>Returns</strong> tab for return reasons</li>
+        <li>Enter each topic, % mention rate, and 2–3 sample quotes below</li>
+      </ol>
+    </div>
+    <div class="poe-block">
+      <div class="poe-block-title"><span class="badge pos">Positive topics</span></div>
+      <div class="poe-header"><span>Topic</span><span>% Mentions</span><span>Sample quotes</span></div>
+      ${poeRows(d.poe.pos,'pos')}
+    </div>
+    <div class="poe-block">
+      <div class="poe-block-title"><span class="badge neg">Negative topics</span></div>
+      <div class="poe-header"><span>Topic</span><span>% Mentions</span><span>Sample quotes</span></div>
+      ${poeRows(d.poe.neg,'neg')}
+    </div>
+    <div class="poe-block">
+      <div class="poe-block-title"><span class="badge ret">Return reasons</span></div>
+      <div class="poe-header"><span>Topic</span><span>% Mentions</span><span>Sample quotes</span></div>
+      ${poeRows(d.poe.ret,'ret')}
+    </div>
+  `;
+  restorePOE();
 }
+
+// ── STEP 2: Competitor Analysis ──────────────────────────────
 function step2(c){
-  const themeHTML=THEME_LIST.map((t,i)=>`<label class="theme-opt ${(d.comp.themes||[]).includes(t)?'selected':''}" id="thlabel_${i}"><input type="checkbox" id="th_${i}" ${(d.comp.themes||[]).includes(t)?'checked':''}><span>${t}</span></label>`).join('');
-  c.innerHTML=`<div class="step-eyebrow">Step 3 of 5</div><div class="step-title">Competitor research</div><div class="step-sub">Search your keyword on Amazon. Open the top 3–5 products. Look at every image and note what communication points they cover.</div>${fld('comp_link','Competitor images doc','Optional — paste a Canva or Google Slides link if you compiled screenshots.','text',d.comp.link,'https://www.canva.com/...')}<div class="field"><label>What themes are competitors covering?</label><div class="sub">Check everything appearing across 2 or more competitor listings.</div><div class="themes">${themeHTML}</div></div>${fld('comp_gaps','What are competitors NOT showing?','Based on your POE data — what customer pain points are absent from competitor listings?','textarea',d.comp.gaps,'e.g. No competitor shows a before/after of chopped vs unchopped meat',3)}`;
-  restoreComp();THEME_LIST.forEach((_,i)=>{const cb=document.getElementById(`th_${i}`);const lb=document.getElementById(`thlabel_${i}`);if(cb&&lb)cb.addEventListener('change',()=>lb.classList.toggle('selected',cb.checked));});
+  const topics=getAllPOETopics();
+  const topicHTML = topics.length ? topics.map((t,i)=>{
+    const checked=d.comp.coveredTopics.includes(t.topic);
+    return `<label class="comp-topic-item ${checked?'covered':''}" id="ctlabel_${i}">
+      <input type="checkbox" id="ct_${i}" ${checked?'checked':''}>
+      <span class="topic-name">${t.topic}</span>
+      <span class="topic-type-badge ${t.type}">${t.type==='pos'?'Positive':'Negative'}</span>
+      <span class="topic-pct">${t.pct}</span>
+    </label>`;
+  }).join('') : `<div class="empty-state">No POE topics found — go back to Step 2 and fill in your research first.</div>`;
+
+  c.innerHTML=`
+    <div class="step-eyebrow">Step 3 of 6</div>
+    <div class="step-title">Competitor analysis</div>
+    <div class="step-sub">Search your keyword on Amazon. Open the top 3–5 products by BSR and look at every image in their listing.</div>
+    <div class="field"><label>Competitor images doc</label><div class="sub">Optional — paste a Canva or Google Slides link if you compiled screenshots.</div><input type="text" id="comp_link" placeholder="https://www.canva.com/..."></div>
+    <div class="field"><label>General observations</label><div class="sub">What do you notice about how competitors are presenting their products overall?</div><textarea id="comp_notes" rows="3" placeholder="e.g. Most competitors lead with a lifestyle shot, few show dimensions, none show a before/after"></textarea></div>
+    <div class="field">
+      <label>Which of your POE topics are competitors addressing visually?</label>
+      <div class="sub">Check every topic that at least one competitor covers in their listing images. Leave unchecked = gap opportunity.</div>
+      <div class="comp-topic-list">${topicHTML}</div>
+    </div>
+  `;
+  setVal('comp_link',d.comp.link);
+  setVal('comp_notes',d.comp.notes);
+  if(topics.length){
+    topics.forEach((_,i)=>{
+      const cb=document.getElementById(`ct_${i}`);
+      const lb=document.getElementById(`ctlabel_${i}`);
+      if(cb&&lb)cb.addEventListener('change',()=>lb.classList.toggle('covered',cb.checked));
+    });
+  }
 }
+
+// ── STEP 3: Differentiators ───────────────────────────────────
 function step3(c){
-  c.innerHTML=`<div class="step-eyebrow">Step 4 of 5</div><div class="step-title">Product differentiators</div><div class="step-sub">What makes this product different from everything else on the page? Pull the spec sheet and physically look at the product.</div>${fld('df_specLink','Spec sheet link','Dropbox or Drive link.','text',d.diff.specLink,'')}${fld('df_materials','Key materials & specs','Include material names, heat resistance ratings, certifications.','textarea',d.diff.materials,'e.g. Nylon head (heat resistant to 356°F), TPR handle, BPA Free, dishwasher safe',3)}${fld('df_features','Unique physical features','What does this product have that competitors lack?','textarea',d.diff.features,'e.g. Thumb divot on handle, one-piece tapered neck, reinforced neck-to-head connection',3)}${fld('df_certs','Certifications & claims','','text',d.diff.certs,'e.g. BPA Free, FDA compliant')};restoreDiff();`;
+  c.innerHTML=`
+    <div class="step-eyebrow">Step 4 of 6</div>
+    <div class="step-title">Product differentiators</div>
+    <div class="step-sub">What makes this product different from everything else on the page? Pull the spec sheet and physically examine the product.</div>
+    <div class="field"><label>Spec sheet link</label><div class="sub">Dropbox or Drive link.</div><input type="text" id="df_specLink"></div>
+    <div class="field"><label>Unique features & USPs</label><div class="sub">List each unique feature or selling point on a separate line. These are things competitors do not have — different handle design, reinforced connection, extra attachment, higher heat resistance, etc.</div><textarea id="df_features" rows="6" placeholder="Thumb divot on handle for better grip&#10;One-piece tapered neck — won't snap&#10;Reinforced neck-to-head connection&#10;Heat resistant to 356°F vs competitor 300°F"></textarea></div>
+    <div class="field"><label>Certifications & claims</label><div class="sub">BPA Free, FDA compliant, dishwasher safe, etc.</div><input type="text" id="df_certs" placeholder="e.g. BPA Free, FDA compliant, dishwasher safe"></div>
+  `;
+  setVal('df_specLink',d.diff.specLink);
+  setVal('df_features',d.diff.features);
+  setVal('df_certs',d.diff.certs);
 }
+
+// ── STEP 4: Gap Analysis ──────────────────────────────────────
 function step4(c){
-  const mainSlot=`<div class="comm-slot"><div class="comm-slot-header"><span class="slot-pill">Main image</span><span class="slot-hint">Pure white background, product fills 85%+ of frame, no text. Show all color variants.</span></div><textarea id="plan_main" rows="2" placeholder="What should the main image communicate about this product?"></textarea></div>`;
-  const imgSlots=d.plan.images.map((_,i)=>`<div class="comm-slot"><div class="comm-slot-header"><span class="slot-pill">Image ${i+1}</span><span class="slot-hint">${IMG_HINTS[i]}</span></div><textarea id="plan_img_${i}" rows="2" placeholder="What should this image make the customer understand or feel?"></textarea></div>`).join('');
-  const apSlots=d.plan.aplus.map((_,i)=>`<div class="comm-slot"><div class="comm-slot-header"><span class="slot-pill">A+ Module ${i+1}</span><span class="slot-hint">${APLUS_HINTS[i]}</span></div><textarea id="plan_ap_${i}" rows="2" placeholder="What should this module communicate?"></textarea></div>`).join('');
-  c.innerHTML=`<div class="step-eyebrow">Step 5 of 5</div><div class="step-title">Image communication plan</div><div class="step-sub">Based on your research, write one communication goal per image slot. Focus on what the customer should <em>understand or feel</em> — not what the image should look like. The designer handles that.</div><div class="callout"><div class="callout-title">The golden rule</div><div class="callout-body">If all text were removed from the image, would a customer still understand the point? If not — rethink the goal.</div></div>${mainSlot}<div class="section-label">Secondary images</div>${imgSlots}<div class="section-label">A+ content</div>${apSlots}`;
+  const gaps=getGaps();
+  const usps=getUSPs();
+
+  const gapHTML = gaps.length ? gaps.map(t=>`
+    <div class="gap-item">
+      <span class="gap-icon">${t.type==='pos'?'★':'⚠'}</span>
+      <span class="gap-text"><strong>${t.topic}</strong> — customers mention this in ${t.pct} of reviews but no competitor addresses it visually</span>
+      <span class="topic-type-badge ${t.type}">${t.type==='pos'?'Positive':'Negative'}</span>
+    </div>`).join('') : `<div class="empty-state">No gaps found — either all POE topics are covered by competitors, or go back and complete Steps 2 and 3.</div>`;
+
+  const uspHTML = usps.length ? usps.map(u=>`
+    <div class="gap-item usp-item">
+      <span class="gap-icon">◆</span>
+      <span class="gap-text"><strong>${u}</strong> — unique to your product, not available from competitors</span>
+      <span class="badge usp">USP</span>
+    </div>`).join('') : `<div class="empty-state">No USPs found — go back to Step 4 and list your unique features.</div>`;
+
+  c.innerHTML=`
+    <div class="step-eyebrow">Step 5 of 6</div>
+    <div class="step-title">Gap analysis</div>
+    <div class="step-sub">These are your image opportunities — things customers care about that competitors aren't showing, and things your product has that competitors don't. Use these to inform your image plan in the next step.</div>
+
+    <div class="callout-info">
+      <div class="callout-title">How to use this</div>
+      <div class="callout-body">Each gap and USP below is a potential image. The strongest listings address the highest-% gaps first, then layer in USPs that directly counter top negative review topics. Review this list, then build your image plan around it.</div>
+    </div>
+
+    <div class="section-divider">POE gaps — topics competitors are not addressing visually</div>
+    <div class="gap-list">${gapHTML}</div>
+
+    <div class="section-divider" style="margin-top:1.5rem">USP opportunities — unique features competitors don't have</div>
+    <div class="gap-list">${uspHTML}</div>
+  `;
 }
 
-function wrap(text, maxLen) {
-  if (!text) return ['—'];
-  const words = text.split(' ');
-  const lines = [];
-  let line = '';
-  words.forEach(w => {
-    if ((line + ' ' + w).trim().length > maxLen) { lines.push(line.trim()); line = w; }
-    else line = (line + ' ' + w).trim();
-  });
-  if (line) lines.push(line.trim());
-  return lines.length ? lines : ['—'];
-}
+// ── STEP 5: Image Plan ────────────────────────────────────────
+function step5(c){
+  const gaps=getGaps();
+  const usps=getUSPs();
 
-function exportPDF(){
-  save();
-  const btn = document.querySelector('.btn-export');
-  btn.disabled = true;
-  btn.textContent = 'Generating…';
-
-  try {
-    const {jsPDF} = window.jspdf;
-    const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
-    const navy = [26, 60, 94];
-    const orange = [232, 115, 42];
-    const W = 210;
-    const margin = 15;
-    const contentW = W - margin * 2;
-    let y = 0;
-
-    function newPage() { doc.addPage(); y = 15; }
-
-    function checkY(needed) { if (y + needed > 280) newPage(); }
-
-    function sectionHeader(title) {
-      checkY(12);
-      doc.setFillColor(...navy);
-      doc.rect(margin, y, contentW, 8, 'F');
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(9);
-      doc.setTextColor(255,255,255);
-      doc.text(title.toUpperCase(), margin + 3, y + 5.5);
-      y += 11;
-      doc.setTextColor(0,0,0);
-    }
-
-    function label(text) {
-      checkY(6);
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(9);
-      doc.setTextColor(...navy);
-      doc.text(text, margin, y);
-      y += 5;
-      doc.setTextColor(0,0,0);
-    }
-
-    function bodyText(text) {
-      if (!text) return;
-      doc.setFont('helvetica','normal');
-      doc.setFontSize(9);
-      doc.setTextColor(60,60,60);
-      const lines = doc.splitTextToSize(text, contentW);
-      lines.forEach(line => { checkY(5); doc.text(line, margin, y); y += 4.5; });
-      y += 2;
-      doc.setTextColor(0,0,0);
-    }
-
-    function poeTable(rows, headerColor) {
-      if (!rows.length) return;
-      doc.autoTable({
-        startY: y,
-        margin: {left: margin, right: margin},
-        head: [['Topic', '% Mentions', 'Sample quotes']],
-        body: rows.map(r => [r.topic, r.pct, r.quotes]),
-        headStyles: {fillColor: headerColor, fontSize: 8, fontStyle: 'bold'},
-        bodyStyles: {fontSize: 8},
-        columnStyles: {0:{cellWidth:45}, 1:{cellWidth:22}, 2:{cellWidth:contentW-67}},
-        alternateRowStyles: {fillColor: [249,249,249]},
-        tableLineColor: [220,220,220],
-        tableLineWidth: 0.1,
-      });
-      y = doc.lastAutoTable.finalY + 4;
-    }
-
-    function slotTable(rows) {
-      if (!rows.length) return;
-      doc.autoTable({
-        startY: y,
-        margin: {left: margin, right: margin},
-        head: [['Image slot', 'Communication goal']],
-        body: rows,
-        headStyles: {fillColor: navy, fontSize: 8, fontStyle: 'bold'},
-        bodyStyles: {fontSize: 8},
-        columnStyles: {0:{cellWidth:42}, 1:{cellWidth:contentW-42}},
-        alternateRowStyles: {fillColor: [249,249,249]},
-        tableLineColor: [220,220,220],
-        tableLineWidth: 0.1,
-      });
-      y = doc.lastAutoTable.finalY + 4;
-    }
-
-    // ── HEADER ──────────────────────────────────────────────
-    doc.setFillColor(...navy);
-    doc.rect(0, 0, W, 28, 'F');
-    doc.setFillColor(...orange);
-    doc.rect(0, 28, W, 2, 'F');
-
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(7);
-    doc.setTextColor(232,115,42);
-    doc.text('ZULAY KITCHEN — LISTING IMAGE BRIEF', margin, 10);
-
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(16);
-    doc.setTextColor(255,255,255);
-    doc.text(d.basics.name || 'Product Brief', margin, 20);
-
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(8);
-    doc.setTextColor(180,200,220);
-    const meta = [d.basics.asin, d.basics.type, d.basics.keyword ? `Keyword: ${d.basics.keyword}` : ''].filter(Boolean).join('  ·  ');
-    doc.text(meta, margin, 25.5);
-
-    if (d.basics.requestor || d.basics.date) {
-      doc.setTextColor(180,200,220);
-      doc.text([d.basics.requestor, d.basics.date].filter(Boolean).join('  ·  '), W - margin, 25.5, {align:'right'});
-    }
-
-    y = 36;
-    doc.setTextColor(0,0,0);
-
-    // ── SECTION 1: POE ───────────────────────────────────────
-    sectionHeader('POE Research');
-
-    const posData = d.poe.pos.filter(r=>r.topic);
-    const negData = d.poe.neg.filter(r=>r.topic);
-    const retData = d.poe.ret.filter(r=>r.topic);
-
-    if (posData.length) {
-      label('Positive topics');
-      poeTable(posData, [42,90,14]);
-    }
-    if (negData.length) {
-      label('Negative topics');
-      poeTable(negData, [122,28,28]);
-    }
-    if (retData.length) {
-      label('Return reasons');
-      poeTable(retData, [122,66,0]);
-    }
-
-    // ── SECTION 2: COMPETITORS ───────────────────────────────
-    sectionHeader('Competitor Research');
-    if (d.comp.link) { label('Images doc'); bodyText(d.comp.link); }
-    if (d.comp.themes && d.comp.themes.length) { label('Themes seen'); bodyText(d.comp.themes.join(', ')); }
-    if (d.comp.gaps) { label('Gaps — what competitors are not showing'); bodyText(d.comp.gaps); }
-
-    // ── SECTION 3: DIFFERENTIATORS ───────────────────────────
-    sectionHeader('Product Differentiators');
-    if (d.diff.specLink) { label('Spec sheet'); bodyText(d.diff.specLink); }
-    if (d.diff.materials) { label('Materials & specs'); bodyText(d.diff.materials); }
-    if (d.diff.features) { label('Unique features'); bodyText(d.diff.features); }
-    if (d.diff.certs) { label('Certifications'); bodyText(d.diff.certs); }
-
-    // ── SECTION 4: IMAGE PLAN ────────────────────────────────
-    sectionHeader('Image Communication Plan');
-
-    doc.setFont('helvetica','italic');
-    doc.setFontSize(8);
-    doc.setTextColor(...orange);
-    checkY(6);
-    doc.text('Golden rule: if all text were removed from the image, the customer should still understand the point.', margin, y);
-    y += 7;
-    doc.setTextColor(0,0,0);
-
-    const slotRows = [
-      ['Main image', d.plan.main || '—'],
-      ...d.plan.images.map((v,i) => [`Image ${i+1}`, v || '—']),
-      ...d.plan.aplus.map((v,i) => [`A+ Module ${i+1}`, v || '—'])
-    ];
-    slotTable(slotRows);
-
-    // ── FOOTER ───────────────────────────────────────────────
-    const pageCount = doc.internal.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i);
-      doc.setFont('helvetica','normal');
-      doc.setFontSize(7);
-      doc.setTextColor(150,150,150);
-      doc.text(`Zulay Kitchen — Listing Image Brief  ·  Page ${i} of ${pageCount}`, W/2, 292, {align:'center'});
-    }
-
-    const filename = `Listing_Brief_${(d.basics.asin || d.basics.name || 'product').replace(/\s+/g,'_')}.pdf`;
-    doc.save(filename);
-
-  } catch(e) {
-    alert('Error generating PDF: ' + e.message);
-    console.error(e);
+  let opportunitiesHTML='';
+  if(gaps.length||usps.length){
+    const items=[
+      ...gaps.map(t=>`<span class="badge ${t.type}" style="margin:.2rem">${t.topic} (${t.pct})</span>`),
+      ...usps.map(u=>`<span class="badge usp" style="margin:.2rem">${u}</span>`)
+    ].join('');
+    opportunitiesHTML=`<div class="callout"><div class="callout-title">Your opportunities from the gap analysis</div><div class="callout-body" style="margin-top:.5rem">${items}</div></div>`;
   }
 
-  btn.disabled = false;
-  btn.textContent = 'Export PDF';
+  const mainSlot=`<div class="comm-slot"><div class="comm-slot-header"><span class="slot-pill">Main image</span><span class="slot-hint">Pure white background, product fills 85%+ of frame, no text. Show all color variants.</span></div><textarea id="plan_main" rows="2" placeholder="What should the main image communicate?"></textarea></div>`;
+  const imgSlots=d.plan.images.map((_,i)=>`<div class="comm-slot"><div class="comm-slot-header"><span class="slot-pill">Image ${i+1}</span><span class="slot-hint">${IMG_HINTS[i]}</span></div><textarea id="plan_img_${i}" rows="2" placeholder="What should this image make the customer understand or feel?"></textarea></div>`).join('');
+  const apSlots=d.plan.aplus.map((_,i)=>`<div class="comm-slot"><div class="comm-slot-header"><span class="slot-pill">A+ Module ${i+1}</span><span class="slot-hint">${APLUS_HINTS[i]}</span></div><textarea id="plan_ap_${i}" rows="2" placeholder="What should this module communicate?"></textarea></div>`).join('');
+
+  c.innerHTML=`
+    <div class="step-eyebrow">Step 6 of 6</div>
+    <div class="step-title">Image communication plan</div>
+    <div class="step-sub">Use your gap analysis to write one communication goal per image slot. Focus on what the customer should <em>understand or feel</em> — not what the image should look like.</div>
+    ${opportunitiesHTML}
+    <div class="callout"><div class="callout-title">The golden rule</div><div class="callout-body">If all text were removed from the image, would a customer still understand the point? If not — rethink the goal.</div></div>
+    ${mainSlot}
+    <div class="section-label">Secondary images</div>
+    ${imgSlots}
+    <div class="section-label">A+ content</div>
+    ${apSlots}
+  `;
+  setVal('plan_main',d.plan.main);
+  d.plan.images.forEach((_,i)=>setVal(`plan_img_${i}`,d.plan.images[i]));
+  d.plan.aplus.forEach((_,i)=>setVal(`plan_ap_${i}`,d.plan.aplus[i]));
 }
 
+// ── PDF Export ────────────────────────────────────────────────
+function exportPDF(){
+  const btn=document.querySelector('.btn-export');
+  btn.disabled=true;btn.textContent='Generating…';
+  try{
+    const {jsPDF}=window.jspdf;
+    const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const navy=[26,60,94],orange=[232,115,42];
+    const W=210,margin=15,contentW=W-margin*2;
+    let y=0;
+    function newPage(){doc.addPage();y=15;}
+    function checkY(n){if(y+n>280)newPage();}
+    function secHeader(title){checkY(12);doc.setFillColor(...navy);doc.rect(margin,y,contentW,8,'F');doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(255,255,255);doc.text(title.toUpperCase(),margin+3,y+5.5);y+=11;doc.setTextColor(0,0,0);}
+    function lbl(text){checkY(6);doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...navy);doc.text(text,margin,y);y+=5;doc.setTextColor(0,0,0);}
+    function bodyTxt(text){if(!text)return;doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(60,60,60);const lines=doc.splitTextToSize(text,contentW);lines.forEach(line=>{checkY(5);doc.text(line,margin,y);y+=4.5;});y+=2;doc.setTextColor(0,0,0);}
+    function poeTable(rows,hColor){if(!rows.length)return;doc.autoTable({startY:y,margin:{left:margin,right:margin},head:[['Topic','% Mentions','Sample quotes']],body:rows.map(r=>[r.topic,r.pct,r.quotes]),headStyles:{fillColor:hColor,fontSize:8,fontStyle:'bold'},bodyStyles:{fontSize:8},columnStyles:{0:{cellWidth:45},1:{cellWidth:22},2:{cellWidth:contentW-67}},alternateRowStyles:{fillColor:[249,249,249]},tableLineColor:[220,220,220],tableLineWidth:0.1});y=doc.lastAutoTable.finalY+4;}
+    function slotTable(rows){if(!rows.length)return;doc.autoTable({startY:y,margin:{left:margin,right:margin},head:[['Image slot','Communication goal']],body:rows,headStyles:{fillColor:navy,fontSize:8,fontStyle:'bold'},bodyStyles:{fontSize:8},columnStyles:{0:{cellWidth:42},1:{cellWidth:contentW-42}},alternateRowStyles:{fillColor:[249,249,249]},tableLineColor:[220,220,220],tableLineWidth:0.1});y=doc.lastAutoTable.finalY+4;}
+
+    const b=d.basics;
+    doc.setFillColor(...navy);doc.rect(0,0,W,28,'F');doc.setFillColor(...orange);doc.rect(0,28,W,2,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(232,115,42);doc.text('ZULAY KITCHEN — LISTING IMAGE BRIEF',margin,10);
+    doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(255,255,255);doc.text(b.name||'Product Brief',margin,20);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(180,200,220);
+    const meta=[b.asin,b.type,b.keyword?`Keyword: ${b.keyword}`:''].filter(Boolean).join('  ·  ');
+    doc.text(meta,margin,25.5);
+    if(b.requestor||b.date)doc.text([b.requestor,b.date].filter(Boolean).join('  ·  '),W-margin,25.5,{align:'right'});
+    y=36;doc.setTextColor(0,0,0);
+
+    if(b.type==='Refresh'&&b.refreshNote){checkY(12);doc.setFillColor(253,243,236);doc.rect(margin,y,contentW,8,'F');doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(160,66,10);doc.text(`Refresh note: ${b.refreshNote}`,margin+3,y+5.5);y+=12;doc.setTextColor(0,0,0);}
+
+    secHeader('POE Research');
+    const posData=d.poe.pos.filter(r=>r.topic);
+    const negData=d.poe.neg.filter(r=>r.topic);
+    const retData=d.poe.ret.filter(r=>r.topic);
+    if(posData.length){lbl('Positive topics');poeTable(posData,[42,90,14]);}
+    if(negData.length){lbl('Negative topics');poeTable(negData,[122,28,28]);}
+    if(retData.length){lbl('Return reasons');poeTable(retData,[122,66,0]);}
+
+    secHeader('Competitor Analysis');
+    if(d.comp.link){lbl('Images doc');bodyTxt(d.comp.link);}
+    if(d.comp.notes){lbl('Observations');bodyTxt(d.comp.notes);}
+    const covered=d.comp.coveredTopics;
+    if(covered.length){lbl('Topics competitors address');bodyTxt(covered.join(', '));}
+
+    secHeader('Product Differentiators');
+    if(d.diff.specLink){lbl('Spec sheet');bodyTxt(d.diff.specLink);}
+    if(d.diff.features){lbl('Unique features & USPs');bodyTxt(d.diff.features);}
+    if(d.diff.certs){lbl('Certifications');bodyTxt(d.diff.certs);}
+
+    secHeader('Gap Analysis');
+    const gaps=getGaps();
+    const usps=getUSPs();
+    if(gaps.length){
+      lbl('POE gaps — not addressed by competitors');
+      doc.autoTable({startY:y,margin:{left:margin,right:margin},head:[['Topic','% Mentions','Type']],body:gaps.map(g=>[g.topic,g.pct,g.type==='pos'?'Positive':'Negative']),headStyles:{fillColor:orange,fontSize:8,fontStyle:'bold'},bodyStyles:{fontSize:8},columnStyles:{0:{cellWidth:80},1:{cellWidth:25},2:{cellWidth:contentW-105}},alternateRowStyles:{fillColor:[253,243,236]},tableLineColor:[220,220,220],tableLineWidth:0.1});
+      y=doc.lastAutoTable.finalY+4;
+    }
+    if(usps.length){
+      lbl('USP opportunities — unique to your product');
+      doc.autoTable({startY:y,margin:{left:margin,right:margin},head:[['Unique feature / USP']],body:usps.map(u=>[u]),headStyles:{fillColor:navy,fontSize:8,fontStyle:'bold'},bodyStyles:{fontSize:8},alternateRowStyles:{fillColor:[238,243,248]},tableLineColor:[220,220,220],tableLineWidth:0.1});
+      y=doc.lastAutoTable.finalY+4;
+    }
+
+    secHeader('Image Communication Plan');
+    checkY(8);doc.setFont('helvetica','italic');doc.setFontSize(8);doc.setTextColor(...orange);doc.text('Golden rule: if all text were removed from the image, the customer should still understand the point.',margin,y);y+=7;doc.setTextColor(0,0,0);
+    const slotRows=[{label:'Main image',val:d.plan.main},...d.plan.images.map((v,i)=>({label:`Image ${i+1}`,val:v})),...d.plan.aplus.map((v,i)=>({label:`A+ Module ${i+1}`,val:v}))].map(s=>[s.label,s.val||'—']);
+    slotTable(slotRows);
+
+    const pageCount=doc.internal.getNumberOfPages();
+    for(let i=1;i<=pageCount;i++){doc.setPage(i);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(150,150,150);doc.text(`Zulay Kitchen — Listing Image Brief  ·  Page ${i} of ${pageCount}`,W/2,292,{align:'center'});}
+
+    const filename=`Listing_Brief_${(b.asin||b.name||'product').replace(/\s+/g,'_')}.pdf`;
+    doc.save(filename);
+  }catch(e){alert('Error: '+e.message);console.error(e);}
+  btn.disabled=false;btn.textContent='Export PDF';
+}
+
+// ── Render ────────────────────────────────────────────────────
 function render(){
   prog();
   const w=document.getElementById('stepWrap');
   w.innerHTML='';
-  [step0,step1,step2,step3,step4][cur](w);
+  [step0,step1,step2,step3,step4,step5][cur](w);
   const nav=document.getElementById('nav');
   nav.innerHTML='';
   if(cur>0){const b=document.createElement('button');b.className='btn btn-back';b.textContent='← Back';b.onclick=()=>{save();cur--;render();window.scrollTo(0,0);};nav.appendChild(b);}
   else nav.appendChild(document.createElement('div'));
   const f=document.createElement('button');
   if(cur<STEPS.length-1){f.className='btn btn-next';f.textContent='Continue →';f.onclick=()=>{save();cur++;render();window.scrollTo(0,0);};}
-  else{f.className='btn btn-export';f.textContent='Export PDF';f.onclick=exportPDF;}
+  else{f.className='btn btn-export';f.textContent='Export PDF';f.onclick=()=>{save();exportPDF();};}
   nav.appendChild(f);
 }
 render();
